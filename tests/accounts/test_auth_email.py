@@ -2,6 +2,7 @@ import datetime
 
 from django.utils import timezone
 
+from utils.constants import Const
 from accounts.tests import TestCase
 
 
@@ -123,7 +124,8 @@ class EmailAuthTest(TestCase):
         self.status(400)
 
     def test_auth_email_answer_check_validation(self):
-        then = timezone.localtime() - datetime.timedelta(minutes=4)
+        expired_min = Const.AUTH_CODE_EXPIRATION_SECONDS / 60 + 1
+        then = timezone.localtime() - datetime.timedelta(minutes=expired_min)
         auth_code = self.create_auth_code(created_at=then)
 
         self.post(
