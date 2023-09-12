@@ -1,0 +1,182 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-09-11 11:25+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: bbgo/settings.py:250
+msgid "Korean"
+msgstr ""
+
+#: bbgo/settings.py:251
+msgid "English"
+msgstr ""
+
+#: frontend/templates/email_auth.html:7
+#: frontend/templates/password_reset.html:19
+#, python-format
+msgid "Dear %(call_name)s"
+msgstr ""
+
+#: frontend/templates/email_auth.html:13
+msgid "Please enter auth code below to complete email authentication."
+msgstr ""
+
+#: frontend/templates/email_auth.html:31
+msgid ""
+"To secure your personal information, this code is available within 3 minutes."
+msgstr ""
+
+#: frontend/templates/email_auth_subject.txt:2
+msgid "Email authentication"
+msgstr ""
+
+#: frontend/templates/password_reset.html:25
+msgid "Someone requested that the password for your account be reset."
+msgstr ""
+
+#: frontend/templates/password_reset.html:31
+msgid "Please go to the following page to set a new password."
+msgstr ""
+
+#: frontend/templates/password_reset.html:40
+#: frontend/templates/password_reset_subject.txt:2
+msgid "Password reset"
+msgstr ""
+
+#: frontend/templates/password_reset.html:49
+msgid ""
+"If you didn't request this, you can ignore this email. Your password won't "
+"be changed until you set a new password."
+msgstr ""
+
+#: utils/text.py:12
+msgid "Unable to login."
+msgstr ""
+
+#: utils/text.py:13
+msgid "User is deactivated."
+msgstr ""
+
+#: utils/text.py:14
+msgid "Invalid password."
+msgstr ""
+
+#: utils/text.py:15
+msgid "Same as old password."
+msgstr ""
+
+#: utils/text.py:16
+msgid "User not exist."
+msgstr ""
+
+#: utils/text.py:17
+msgid "Username exists."
+msgstr ""
+
+#: utils/text.py:18
+msgid "Invalid uid."
+msgstr ""
+
+#: utils/text.py:19
+msgid "Invalid token."
+msgstr ""
+
+#: utils/text.py:20
+msgid "You must consent."
+msgstr ""
+
+#: utils/text.py:22
+msgid "Invalid permission type"
+msgstr ""
+
+#: utils/text.py:23
+msgid "alphabets and number only"
+msgstr ""
+
+#: utils/text.py:24
+msgid "Used auth code."
+msgstr ""
+
+#: utils/text.py:25
+msgid "Expired auth code."
+msgstr ""
+
+#: utils/text.py:26
+msgid "Invalid auth code."
+msgstr ""
+
+#: utils/text.py:27
+#, python-format
+msgid "Authenticate code. %(code)s"
+msgstr ""
+
+#: utils/text.py:29
+msgid "This field is required."
+msgstr ""
+
+#: utils/text.py:30
+msgid "Invalid value"
+msgstr ""
+
+#: utils/text.py:31
+msgid "File too large"
+msgstr ""
+
+#: utils/text.py:32
+msgid "Already exists."
+msgstr ""
+
+#: utils/text.py:34
+msgid "User"
+msgstr ""
+
+#: utils/text.py:35
+msgid "Username"
+msgstr ""
+
+#: utils/text.py:36
+msgid "First name"
+msgstr ""
+
+#: utils/text.py:37
+msgid "Last name"
+msgstr ""
+
+#: utils/text.py:38
+msgid "Call Name"
+msgstr ""
+
+#: utils/text.py:39
+msgid "Tel"
+msgstr ""
+
+#: utils/text.py:40
+msgid "Address"
+msgstr ""
+
+#: utils/text.py:41
+msgid "Active"
+msgstr ""
+
+#: utils/text.py:42
+msgid "Approved"
+msgstr ""
+
+#: utils/text.py:43
+msgid "Joined at"
+msgstr ""

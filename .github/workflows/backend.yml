@@ -1,0 +1,67 @@
+name: API
+
+on:
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - 'frontend/**'
+  pull_request:
+    branches:
+      - '**'
+    paths-ignore:
+      - 'frontend/**'
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-22.04
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.10']
+        db: [postgres]
+        include:
+          - db: postgres
+            db_port: 5432
+            db_user: wc
+            db_password: wc
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: ${{ matrix.db_user }}
+          POSTGRES_PASSWORD: ${{ matrix.db_password }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - ${{ matrix.db_port }}:${{ matrix.db_port }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Tests
+      env:
+        DB: ${{ matrix.db }}
+        DB_HOST: localhost
+        DB_PORT: ${{ matrix.db_port }}
+        DB_PASSWORD: ${{ matrix.db_password }}
+      run: |
+        tox
+
+    - name: Upload coverage
+      if: success() && github.ref == 'refs/heads/master'
+      run: codecov

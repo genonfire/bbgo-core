@@ -1,0 +1,186 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-09-11 11:25+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: bbgo/settings.py:250
+msgid "Korean"
+msgstr "한국어"
+
+#: bbgo/settings.py:251
+msgid "English"
+msgstr "영어"
+
+#: frontend/templates/email_auth.html:7
+#: frontend/templates/password_reset.html:19
+#, python-format
+msgid "Dear %(call_name)s"
+msgstr "%(call_name)s 님"
+
+#: frontend/templates/email_auth.html:13
+msgid "Please enter auth code below to complete email authentication."
+msgstr "이메일 인증을 완료하려면 아래의 인증번호를 입력해 주세요."
+
+#: frontend/templates/email_auth.html:31
+msgid ""
+"To secure your personal information, this code is available within 3 minutes."
+msgstr "개인정보 보호를 위해 이 인증번호는 3분간만 유효합니다."
+
+#: frontend/templates/email_auth_subject.txt:2
+msgid "Email authentication"
+msgstr "이메일 인증"
+
+#: frontend/templates/password_reset.html:25
+msgid "Someone requested that the password for your account be reset."
+msgstr "비밀번호 초기화 요청에 의해 발송된 메일입니다."
+
+#: frontend/templates/password_reset.html:31
+msgid "Please go to the following page to set a new password."
+msgstr "아래 링크에 접속하여 새로운 비밀번호를 설정하세요."
+
+#: frontend/templates/password_reset.html:40
+#: frontend/templates/password_reset_subject.txt:2
+msgid "Password reset"
+msgstr "비밀번호 초기화"
+
+#: frontend/templates/password_reset.html:49
+msgid ""
+"If you didn't request this, you can ignore this email. Your password won't "
+"be changed until you set a new password."
+msgstr ""
+"만약 비밀번호 초기화 요청을 한적이 없다면, 이 메일은 무시하셔도 됩니다. 비밀"
+"번호를 새로 설정하지 않는한 기존 비밀번호는 변경되지 않습니다."
+
+#: utils/text.py:12
+msgid "Unable to login."
+msgstr "로그인 실패"
+
+#: utils/text.py:13
+msgid "User is deactivated."
+msgstr "탈퇴한 사용자입니다."
+
+#: utils/text.py:14
+msgid "Invalid password."
+msgstr "비밀번호가 잘못되었습니다."
+
+#: utils/text.py:15
+msgid "Same as old password."
+msgstr "이전 비밀번호와 동일합니다."
+
+#: utils/text.py:16
+msgid "User not exist."
+msgstr "존재하지 않는 사용자입니다."
+
+#: utils/text.py:17
+msgid "Username exists."
+msgstr "이미 가입한 사용자입니다."
+
+#: utils/text.py:18
+msgid "Invalid uid."
+msgstr "사용자 아이디 오류"
+
+#: utils/text.py:19
+msgid "Invalid token."
+msgstr "토큰 오류"
+
+#: utils/text.py:20
+msgid "You must consent."
+msgstr "동의해야 합니다."
+
+#: utils/text.py:22
+msgid "Invalid permission type"
+msgstr "권한이 잘못되었습니다."
+
+#: utils/text.py:23
+msgid "alphabets and number only"
+msgstr "알파벳 대소문자와 숫자만 가능합니다."
+
+#: utils/text.py:24
+msgid "Used auth code."
+msgstr "사용한 인증코드입니다."
+
+#: utils/text.py:25
+msgid "Expired auth code."
+msgstr "만료된 인증코드입니다."
+
+#: utils/text.py:26
+msgid "Invalid auth code."
+msgstr "잘못된 인증코드입니다."
+
+#: utils/text.py:27
+#, python-format
+msgid "Authenticate code. %(code)s"
+msgstr ""
+"인증코드입니다.\n"
+" %(code)s"
+
+#: utils/text.py:29
+msgid "This field is required."
+msgstr "이 필드는 필수 항목입니다."
+
+#: utils/text.py:30
+msgid "Invalid value"
+msgstr "유효하지 않은 값입니다."
+
+#: utils/text.py:31
+msgid "File too large"
+msgstr "파일이 너무 큽니다."
+
+#: utils/text.py:32
+msgid "Already exists."
+msgstr "이미 존재합니다."
+
+#: utils/text.py:34
+msgid "User"
+msgstr "멤버"
+
+#: utils/text.py:35
+msgid "Username"
+msgstr "아이디"
+
+#: utils/text.py:36
+msgid "First name"
+msgstr "이름"
+
+#: utils/text.py:37
+msgid "Last name"
+msgstr "성"
+
+#: utils/text.py:38
+msgid "Call Name"
+msgstr "닉네임"
+
+#: utils/text.py:39
+msgid "Tel"
+msgstr "전화번호"
+
+#: utils/text.py:40
+msgid "Address"
+msgstr "주소"
+
+#: utils/text.py:41
+msgid "Active"
+msgstr "활성"
+
+#: utils/text.py:42
+msgid "Approved"
+msgstr "승인됨"
+
+#: utils/text.py:43
+msgid "Joined at"
+msgstr "가입일"

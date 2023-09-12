@@ -1,0 +1,8 @@
+{
+    "DEBUG": false,
+    "LOCAL_SERVER": true,
+    "TRACE_ENABLED": false,
+    "UPLOAD_MAX_SIZE": 100,
+    "DO_NOT_SEND_EMAIL": true,
+    "DO_NOT_SEND_SMS": true
+}

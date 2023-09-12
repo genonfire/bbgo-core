@@ -1,0 +1,12 @@
+*.pyc
+secrets.json
+config.json
+.DS_Store
+.coverage
+coverage.xml
+pyrightconfig.json
+
+/frontend/bbgo
+/frontend/upload/
+/.tox/
+/*.egg-info/

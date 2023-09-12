@@ -1,0 +1,36 @@
+{% load i18n %}
+{% autoescape off %}
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:640px;margin-left:auto;margin-right:auto;padding-top:15px; padding-bottom:15px;line-height:24px;">
+  <tr>
+    <td style="padding-top:24px;padding-bottom:24px;font-size:24px; font-weight:bold">
+      {% blocktranslate %}Dear {{ call_name }}{% endblocktranslate %},
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      {% translate "Please enter auth code below to complete email authentication." %}
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding-top:24px;padding-bottom:24px">
+        <tr>
+          <td style="font-size:24px; font-weight:bold">
+            {{ auth_code.code }}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      {% translate "To secure your personal information, this code is available within 3 minutes." %}
+    </td>
+  </tr>
+
+</table>
+{% endautoescape %}
