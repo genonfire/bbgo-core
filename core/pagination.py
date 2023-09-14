@@ -11,13 +11,12 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.utils.urls import remove_query_param
 
-from utils.constants import Const
 from utils.debug import Debug  # noqa
 from utils.regexp import RegExpHelper
 from utils.text import Text
 
 
-class PageNumberPagination(_BasePagination):
+class PrevNextPagination(_BasePagination):
     """
     Pagination Style
 
@@ -26,26 +25,6 @@ class PageNumberPagination(_BasePagination):
 
     page_size_query_param = 'page_size'
     page_size_query_param_all = 'all'
-
-    link_count = Const.DEFAULT_LINK_COUNT
-    link_count_query_param = 'link_count'
-    link_count_query_description = 'Number of links to pages per page.'
-    max_link_count = None
-
-    def get_link_count(self, request):
-        if self.link_count_query_param:
-            try:
-                return _positive_int(
-                    request.query_params.get(
-                        self.link_count_query_param, self.link_count
-                    ),
-                    strict=True,
-                    cutoff=self.max_link_count
-                )
-            except (KeyError, ValueError):
-                pass
-
-        return self.link_count
 
     def get_page_size(self, request, queryset):
         if self.page_size_query_param:
@@ -64,11 +43,16 @@ class PageNumberPagination(_BasePagination):
 
         return self.page_size
 
+    def get_first_link(self):
+        if not self.page.has_previous():
+            return None
+
+        url = self.request.build_absolute_uri()
+        return remove_query_param(url, self.page_query_param)
+
     def paginate_queryset(self, queryset, request, view=None):
         page_size = self.get_page_size(request, queryset)
         if not page_size:
-            return None
-        if not self.get_link_count(request):
             return None
 
         paginator = self.django_paginator_class(queryset, page_size)
@@ -102,50 +86,6 @@ class PageNumberPagination(_BasePagination):
 
         self.request = request
         return list(self.page)
-
-    def get_paginated_response(self, data, one_field=None, one_data=None):
-        item_total = self.page.paginator.count
-        page_total = self.page.paginator.num_pages
-        current_page = self.current_page
-        link_count = self.link_count
-
-        page_from = int((current_page - 1) / link_count) * link_count + 1
-        page_to = page_total
-        if page_to - page_from >= link_count:
-            page_to = page_from + link_count - 1
-
-        if one_field:
-            return Response(OrderedDict([
-                ('pagination', OrderedDict([
-                    ('item_total', item_total),
-                    ('page_total', page_total),
-                    ('page_from', page_from),
-                    ('page_to', page_to),
-                    ('current_page', current_page),
-                ])),
-                ('data', data)
-            ]))
-
-        return Response(OrderedDict([
-            ('pagination', OrderedDict([
-                ('item_total', item_total),
-                ('page_total', page_total),
-                ('page_from', page_from),
-                ('page_to', page_to),
-                ('current_page', current_page),
-            ])),
-            ('data', data),
-            (one_field, one_data)
-        ]))
-
-
-class PrevNextPagination(PageNumberPagination):
-    def get_first_link(self):
-        if not self.page.has_previous():
-            return None
-
-        url = self.request.build_absolute_uri()
-        return remove_query_param(url, self.page_query_param)
 
     def get_paginated_response(self, data, one_field=None, one_data=None):
         item_total = self.page.paginator.count

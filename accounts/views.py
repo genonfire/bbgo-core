@@ -293,45 +293,6 @@ class AuthCodeViewSet(ModelViewSet):
         instance.save()
 
 
-class AuthCodeAnswerViewSet(AuthCodeViewSet):
-    serializer_class = serializers.AuthCodeAnswerSerializer
-
-    def answer(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        now = timezone.localtime()
-        code = request.data.get('code')
-
-        if instance.is_used:
-            raise ValidationError({
-                'non_field_errors': [Text.USED_AUTH_CODE]
-            })
-
-        if now > instance.expired_at():
-            raise ValidationError({
-                'non_field_errors': [Text.EXPIRED_AUTH_CODE]
-            })
-
-        if code != instance.code:
-            instance.wrong_input = code
-            instance.is_used = True
-            instance.used_at = now
-            instance.save()
-
-            raise ValidationError({
-                'non_field_errors': [Text.INVALID_AUTH_CODE]
-            })
-
-        instance.is_used = True
-        instance.used_at = now
-        instance.save()
-
-        tools.approve_user(self.request.user, instance)
-        return Response(serializer.data)
-
-
 class SMSAuthViewSet(AuthCodeViewSet):
     serializer_class = serializers.SMSAuthSerializer
 
@@ -370,6 +331,45 @@ class EmailAuthViewSet(AuthCodeViewSet):
                 'auth_code': instance,
             }
         )
+
+
+class AuthCodeAnswerViewSet(AuthCodeViewSet):
+    serializer_class = serializers.AuthCodeAnswerSerializer
+
+    def answer(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        now = timezone.localtime()
+        code = request.data.get('code')
+
+        if instance.is_used:
+            raise ValidationError({
+                'non_field_errors': [Text.USED_AUTH_CODE]
+            })
+
+        if now > instance.expired_at():
+            raise ValidationError({
+                'non_field_errors': [Text.EXPIRED_AUTH_CODE]
+            })
+
+        if code != instance.code:
+            instance.wrong_input = code
+            instance.is_used = True
+            instance.used_at = now
+            instance.save()
+
+            raise ValidationError({
+                'non_field_errors': [Text.INVALID_AUTH_CODE]
+            })
+
+        instance.is_used = True
+        instance.used_at = now
+        instance.save()
+
+        tools.approve_user(self.request.user, instance)
+        return Response(serializer.data)
 
 
 class AuthCodeAdminViewSet(AuthCodeViewSet):

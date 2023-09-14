@@ -88,7 +88,6 @@ class LoginDeviceSerializer(ModelSerializer):
         model = models.LoginDevice
         fields = [
             'id',
-            'user',
             'device',
             'os',
             'browser',
@@ -217,7 +216,6 @@ class UserSettingSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'call_name',
-            'email',
             'photo',
             'tel',
             'address',
@@ -245,7 +243,6 @@ class IAmSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'call_name',
-            'email',
             'photo',
             'tel',
             'address',
@@ -287,7 +284,6 @@ class UserAdminSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'call_name',
-            'email',
             'photo',
             'tel',
             'address',

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-11 11:25+0900\n"
+"POT-Creation-Date: 2023-09-14 11:48+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,39 +26,42 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: frontend/templates/email_auth.html:7
-#: frontend/templates/password_reset.html:19
-#, python-format
-msgid "Dear %(call_name)s"
-msgstr ""
-
-#: frontend/templates/email_auth.html:13
-msgid "Please enter auth code below to complete email authentication."
-msgstr ""
-
-#: frontend/templates/email_auth.html:31
-msgid ""
-"To secure your personal information, this code is available within 3 minutes."
-msgstr ""
-
+#: frontend/templates/email_auth.html:23
 #: frontend/templates/email_auth_subject.txt:2
 msgid "Email authentication"
 msgstr ""
 
-#: frontend/templates/password_reset.html:25
-msgid "Someone requested that the password for your account be reset."
+#: frontend/templates/email_auth.html:27
+#: frontend/templates/password_reset.html:27
+#, python-format
+msgid "Dear %(call_name)s"
 msgstr ""
 
-#: frontend/templates/password_reset.html:31
-msgid "Please go to the following page to set a new password."
+#: frontend/templates/email_auth.html:38
+msgid "Please enter auth code below to complete email authentication."
 msgstr ""
 
-#: frontend/templates/password_reset.html:40
+#: frontend/templates/email_auth.html:61
+msgid ""
+"To secure your personal information, this code is available within 15 "
+"minutes."
+msgstr ""
+
+#: frontend/templates/password_reset.html:23
+#: frontend/templates/password_reset.html:55
 #: frontend/templates/password_reset_subject.txt:2
 msgid "Password reset"
 msgstr ""
 
-#: frontend/templates/password_reset.html:49
+#: frontend/templates/password_reset.html:38
+msgid "Someone requested password reset for your account."
+msgstr ""
+
+#: frontend/templates/password_reset.html:43
+msgid "Please go to the following page to set a new password."
+msgstr ""
+
+#: frontend/templates/password_reset.html:67
 msgid ""
 "If you didn't request this, you can ignore this email. Your password won't "
 "be changed until you set a new password."

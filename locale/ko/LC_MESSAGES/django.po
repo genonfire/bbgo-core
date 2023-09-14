@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-11 11:25+0900\n"
+"POT-Creation-Date: 2023-09-14 11:48+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,39 +26,42 @@ msgstr "한국어"
 msgid "English"
 msgstr "영어"
 
-#: frontend/templates/email_auth.html:7
-#: frontend/templates/password_reset.html:19
-#, python-format
-msgid "Dear %(call_name)s"
-msgstr "%(call_name)s 님"
-
-#: frontend/templates/email_auth.html:13
-msgid "Please enter auth code below to complete email authentication."
-msgstr "이메일 인증을 완료하려면 아래의 인증번호를 입력해 주세요."
-
-#: frontend/templates/email_auth.html:31
-msgid ""
-"To secure your personal information, this code is available within 3 minutes."
-msgstr "개인정보 보호를 위해 이 인증번호는 3분간만 유효합니다."
-
+#: frontend/templates/email_auth.html:23
 #: frontend/templates/email_auth_subject.txt:2
 msgid "Email authentication"
 msgstr "이메일 인증"
 
-#: frontend/templates/password_reset.html:25
-msgid "Someone requested that the password for your account be reset."
-msgstr "비밀번호 초기화 요청에 의해 발송된 메일입니다."
+#: frontend/templates/email_auth.html:27
+#: frontend/templates/password_reset.html:27
+#, python-format
+msgid "Dear %(call_name)s"
+msgstr "%(call_name)s 님"
 
-#: frontend/templates/password_reset.html:31
-msgid "Please go to the following page to set a new password."
-msgstr "아래 링크에 접속하여 새로운 비밀번호를 설정하세요."
+#: frontend/templates/email_auth.html:38
+msgid "Please enter auth code below to complete email authentication."
+msgstr "이메일 인증을 완료하려면 아래의 인증번호를 입력해 주세요."
 
-#: frontend/templates/password_reset.html:40
+#: frontend/templates/email_auth.html:61
+msgid ""
+"To secure your personal information, this code is available within 15 "
+"minutes."
+msgstr "개인정보 보호를 위해 이 인증번호는 15분 동안만 유효합니다."
+
+#: frontend/templates/password_reset.html:23
+#: frontend/templates/password_reset.html:55
 #: frontend/templates/password_reset_subject.txt:2
 msgid "Password reset"
 msgstr "비밀번호 초기화"
 
-#: frontend/templates/password_reset.html:49
+#: frontend/templates/password_reset.html:38
+msgid "Someone requested password reset for your account."
+msgstr "비밀번호 초기화 요청에 의해 발송된 메일입니다."
+
+#: frontend/templates/password_reset.html:43
+msgid "Please go to the following page to set a new password."
+msgstr "아래 링크에 접속해 새로운 비밀번호를 설정하세요."
+
+#: frontend/templates/password_reset.html:67
 msgid ""
 "If you didn't request this, you can ignore this email. Your password won't "
 "be changed until you set a new password."

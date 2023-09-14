@@ -23,7 +23,7 @@ class DeviceTest(TestCase):
 
         device_id = self.login_device.get('id')
         self.post(
-            '/api/accounts/device/%d/register/' % device_id,
+            '/api/accounts/devices/%d/register/' % device_id,
             auth=True
         )
         self.status(200)
@@ -47,7 +47,7 @@ class DeviceTest(TestCase):
         )
 
         self.post(
-            '/api/accounts/device/%d/register/' % device_id,
+            '/api/accounts/devices/%d/register/' % device_id,
             auth=True
         )
         self.status(400)
@@ -55,7 +55,7 @@ class DeviceTest(TestCase):
     def test_device_delete(self):
         device_id = self.login_device.get('id')
         self.delete(
-            '/api/accounts/device/%d/delete/' % device_id,
+            '/api/accounts/devices/%d/' % device_id,
             auth=True
         )
         self.status(204)

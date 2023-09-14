@@ -24,7 +24,6 @@ class ProfileTest(TestCase):
         self.check(self.data.get('first_name'), self.user.first_name)
         self.check(self.data.get('last_name'), self.user.last_name)
         self.check(self.data.get('call_name'), self.user.call_name)
-        self.check(self.data.get('email'), self.user.email)
         self.check(self.data.get('is_approved'), self.user.is_approved)
 
     def test_update_profile(self):
@@ -36,7 +35,6 @@ class ProfileTest(TestCase):
                 'last_name': 'Boy',
                 'call_name': 'B-Boy',
                 'photo': self.gif(),
-                'email': 'b-boy@b.com',
                 'tel': '+82-10-1234-5678',
                 'address': '3245 146th PL SE',
                 'is_approved': not self.user.is_approved,
@@ -49,7 +47,6 @@ class ProfileTest(TestCase):
         self.check(self.data.get('first_name'), 'B')
         self.check(self.data.get('last_name'), 'Boy')
         self.check(self.data.get('call_name'), 'B-Boy')
-        self.check(self.data.get('email'), 'b-boy@b.com')
         self.check(self.data.get('tel'), '+82-10-1234-5678')
         self.check(self.data.get('address'), '3245 146th PL SE')
         self.check(self.data.get('is_approved'), self.user.is_approved)

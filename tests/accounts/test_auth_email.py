@@ -154,3 +154,15 @@ class EmailAuthTest(TestCase):
             auth=True
         )
         self.status(400)
+
+    def test_auth_email_check_unused_success(self):
+        self.post(
+            '/api/accounts/auth/email/',
+            auth=True
+        )
+
+        self.get(
+            '/api/admin/auth_codes/?used=false&success=true',
+            auth=True
+        )
+        self.check(len(self.data), 0)

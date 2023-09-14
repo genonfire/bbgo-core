@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from utils.constants import Const
 from utils.datautils import true_or_false
+from utils.debug import Debug  # noqa
 
 from . import tools
 
@@ -22,11 +23,18 @@ class UserManager(DjangoUserManager):
     def staff(self):
         return self.approved().filter(is_staff=True)
 
+    def query_active(self, q):
+        active = true_or_false(q.get(Const.QUERY_PARAM_ACTIVE))
+        if active:
+            return Q(is_active=active)
+        else:
+            return Q()
+
     def query_staff(self, q):
-        return Q(is_staff=True)
+        return Q(is_staff=True) & self.query_active(q)
 
     def query_anti_staff(self, q):
-        return Q(is_staff=False)
+        return Q(is_staff=False) & self.query_active(q)
 
     def user_query(self, q):
         search_query = Q()
@@ -35,17 +43,9 @@ class UserManager(DjangoUserManager):
                 Q(username__icontains=q) |
                 Q(first_name__icontains=q) |
                 Q(last_name__icontains=q) |
-                Q(call_name__icontains=q) |
-                Q(tel__icontains=q)
+                Q(call_name__icontains=q)
             )
         return search_query
-
-    def query_active(self, query_params):
-        active = true_or_false(query_params.get(Const.QUERY_PARAM_ACTIVE))
-        if active:
-            return Q(is_active=active)
-        else:
-            return Q()
 
     def search(self, q, filters):
         if not filters:
@@ -162,7 +162,10 @@ class AuthCodeManager(models.Manager):
             used_query = Q()
 
         if success:
-            success_query = Q(wrong_input__isnull=bool(success == 'True'))
+            success_query = (
+                Q(is_used=True) &
+                Q(wrong_input__isnull=bool(success == 'True'))
+            )
         else:
             success_query = Q()
 

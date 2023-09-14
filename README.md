@@ -19,10 +19,13 @@ bbgo-ui: https://github.com/genonfire/bbgo-ui
 # Getting started with bbgo
 [Create Python + virtualenv and activate it](https://docs.python.org/3.10/library/venv.html)
 
-    $ git clone https://github.com/genonfire/bbgo-core.git
     $ pip install -r requirements.txt
     $ python manage.py migrate
     $ ./serve.sh
+
+
+# Docker
+    TBD
 
 
 # unittest
