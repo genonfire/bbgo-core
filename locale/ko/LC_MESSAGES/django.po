@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-14 11:48+0900\n"
+"POT-Creation-Date: 2023-09-27 15:29+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,42 +148,46 @@ msgstr "파일이 너무 큽니다."
 msgid "Already exists."
 msgstr "이미 존재합니다."
 
-#: utils/text.py:34
+#: utils/text.py:33
+msgid "File does not exist."
+msgstr "존재하지 않는 파일입니다."
+
+#: utils/text.py:35
 msgid "User"
 msgstr "멤버"
 
-#: utils/text.py:35
+#: utils/text.py:36
 msgid "Username"
 msgstr "아이디"
 
-#: utils/text.py:36
+#: utils/text.py:37
 msgid "First name"
 msgstr "이름"
 
-#: utils/text.py:37
+#: utils/text.py:38
 msgid "Last name"
 msgstr "성"
 
-#: utils/text.py:38
+#: utils/text.py:39
 msgid "Call Name"
 msgstr "닉네임"
 
-#: utils/text.py:39
+#: utils/text.py:40
 msgid "Tel"
 msgstr "전화번호"
 
-#: utils/text.py:40
+#: utils/text.py:41
 msgid "Address"
 msgstr "주소"
 
-#: utils/text.py:41
+#: utils/text.py:42
 msgid "Active"
 msgstr "활성"
 
-#: utils/text.py:42
+#: utils/text.py:43
 msgid "Approved"
 msgstr "승인됨"
 
-#: utils/text.py:43
+#: utils/text.py:44
 msgid "Joined at"
 msgstr "가입일"

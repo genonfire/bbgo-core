@@ -32,9 +32,6 @@ class ForumViewSet(ModelViewSet):
 class ForumUpdateViewSet(ForumViewSet):
     serializer_class = serializers.ForumUpdateSerializer
 
-    def perform_destroy(self, instance):
-        tools.destroy_forum(instance)
-
 
 class ForumReadOnlyViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.ForumListSerializer
@@ -79,6 +76,36 @@ class ThreadUpdateViewSet(ThreadViewSet):
         tools.delete_thread(instance)
 
 
+class ThreadFileViewSet(ThreadViewSet):
+    serializer_class = serializers.ThreadFileSerializer
+
+    def get_queryset(self):
+        return self.model.objects.forum(
+            self.kwargs[Const.QUERY_PARAM_FORUM]
+        )
+
+    def attach_files(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete_files(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if (
+            not self.request.user.is_staff and
+            self.request.user != instance.user
+        ):
+            return Response(status=Response.HTTP_403)
+
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.delete()
+        return Response(serializer.data)
+
+
 class ThreadToggleViewSet(ThreadViewSet):
     serializer_class = serializers.ThreadReadSerializer
 
@@ -113,8 +140,7 @@ class ThreadRestoreViewSet(ThreadToggleViewSet):
     def restore(self, request, *args, **kwargs):
         instance = self.get_object()
         tools.restore_thread(instance)
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        return Response()
 
 
 class ThreadReadOnlyViewSet(ReadOnlyModelViewSet):
@@ -230,4 +256,4 @@ class ReplyListViewSet(ReplyViewSet):
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
-        return self.model.objects.thread(self.thread)
+        return self.model.objects.thread(self.thread, self.request.user)

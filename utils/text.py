@@ -30,6 +30,7 @@ class _Text(object):
     INVALID_VALUE = _("Invalid value")
     FILE_TOO_LARGE = _("File too large")
     ALREADY_EXISTS = _("Already exists.")
+    FILE_NOT_EXIST = _("File does not exist.")
 
     EXCEL_TITLE_USER = _("User")
     EXCEL_TITLE_USERNAME = _("Username")

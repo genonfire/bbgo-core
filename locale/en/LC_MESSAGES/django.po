@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-14 11:48+0900\n"
+"POT-Creation-Date: 2023-09-27 15:29+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -144,42 +144,46 @@ msgstr ""
 msgid "Already exists."
 msgstr ""
 
-#: utils/text.py:34
-msgid "User"
+#: utils/text.py:33
+msgid "File does not exist."
 msgstr ""
 
 #: utils/text.py:35
-msgid "Username"
+msgid "User"
 msgstr ""
 
 #: utils/text.py:36
-msgid "First name"
+msgid "Username"
 msgstr ""
 
 #: utils/text.py:37
-msgid "Last name"
+msgid "First name"
 msgstr ""
 
 #: utils/text.py:38
-msgid "Call Name"
+msgid "Last name"
 msgstr ""
 
 #: utils/text.py:39
-msgid "Tel"
+msgid "Call Name"
 msgstr ""
 
 #: utils/text.py:40
-msgid "Address"
+msgid "Tel"
 msgstr ""
 
 #: utils/text.py:41
-msgid "Active"
+msgid "Address"
 msgstr ""
 
 #: utils/text.py:42
-msgid "Approved"
+msgid "Active"
 msgstr ""
 
 #: utils/text.py:43
+msgid "Approved"
+msgstr ""
+
+#: utils/text.py:44
 msgid "Joined at"
 msgstr ""

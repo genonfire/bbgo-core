@@ -64,6 +64,7 @@ class _Const(object):
     CENSORED_EMAIL_DOMAIN = '@censo.red'
 
     REQUIRED = {'required': True, 'allow_null': False, 'allow_blank': False}
+    JSON_REQUIRED = {'required': True, 'allow_null': False}
     NOT_NULL = {'allow_null': False, 'allow_blank': False}
 
     def __setattr__(self, name, value):
@@ -80,12 +81,31 @@ class _ConstProject(_Const):
     LANG_SURNAME_AHEAD = [
         'ko',
     ]
-
-    MAX_REPLY_NESTING = 99
-    PERMISSION_TYPE = ['all', 'member', 'staff']
+    PERMISSION_LIST = [
+        'permission_read',
+        'permission_write',
+        'permission_reply',
+    ]
+    PERMISSION_ALL = 'all'
+    PERMISSION_MEMBER = 'member'
+    PERMISSION_STAFF = 'staff'
+    PERMISSION_TYPE = [
+        PERMISSION_ALL,
+        PERMISSION_MEMBER,
+        PERMISSION_STAFF,
+    ]
     P_READ = 'read'
     P_WRITE = 'write'
     P_REPLY = 'reply'
+
+    FORUM_OPTION_DEFAULT = {
+        'permission_read': PERMISSION_MEMBER,
+        'permission_write': PERMISSION_MEMBER,
+        'permission_reply': PERMISSION_MEMBER,
+        'support_files': False
+    }
+
+    MAX_REPLY_NESTING = 99
 
     SENSITIVE_URLS = [
         '/api/accounts/login/',

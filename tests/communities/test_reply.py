@@ -1,4 +1,5 @@
 from communities.tests import TestCase
+from utils.constants import Const
 
 
 class ReplyPermissionTest(TestCase):
@@ -6,6 +7,11 @@ class ReplyPermissionTest(TestCase):
         self.create_user(is_staff=True)
 
     def test_permission_reply_all(self):
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_ALL,
+            permission_reply=Const.PERMISSION_ALL
+        )
         self.create_forum()
         self.create_thread()
         thread_id = self.thread.id
@@ -98,11 +104,11 @@ class ReplyPermissionTest(TestCase):
             '/api/communities/f/%d/replies/' % thread_id
         )
         self.status(200)
-        self.check(len(self.data), 2)
+        self.check(len(self.data), 1)
 
     def test_permission_reply_member(self):
         option = self.create_option(
-            permission_reply='member'
+            permission_reply=Const.PERMISSION_MEMBER
         )
         self.create_forum(option=option)
         self.create_thread()
@@ -155,7 +161,7 @@ class ReplyPermissionTest(TestCase):
 
     def test_permission_reply_staff(self):
         option = self.create_option(
-            permission_reply='staff'
+            permission_reply=Const.PERMISSION_STAFF
         )
         self.create_forum(option=option)
         self.create_thread()
@@ -229,8 +235,8 @@ class ReplyPermissionTest(TestCase):
 
     def test_permission_thread_read_member(self):
         option = self.create_option(
-            permission_read='member',
-            permission_reply='member'
+            permission_read=Const.PERMISSION_MEMBER,
+            permission_reply=Const.PERMISSION_MEMBER
         )
         self.create_forum(option=option)
         self.create_thread()
@@ -256,8 +262,8 @@ class ReplyPermissionTest(TestCase):
 
     def test_permission_thread_read_staff(self):
         option = self.create_option(
-            permission_read='staff',
-            permission_reply='staff'
+            permission_read=Const.PERMISSION_STAFF,
+            permission_reply=Const.PERMISSION_STAFF
         )
         self.create_forum(option=option)
         self.create_thread()
@@ -452,3 +458,20 @@ class ReplyListTest(TestCase):
         self.check(self.data[3].get('reply_id'), 0)
         self.check(self.data[4].get('content'), '5')
         self.check(self.data[4].get('reply_id'), 0)
+
+        self.delete(
+            '/api/communities/r/%d/' % self.data[4].get('id'),
+            auth=True
+        )
+        self.get(
+            '/api/communities/f/%d/replies/' % self.thread.id,
+            auth=True
+        )
+        self.check(len(self.data), 5)
+
+        self.create_user(username='replier@a.com')
+        self.get(
+            '/api/communities/f/%d/replies/' % self.thread.id,
+            auth=True
+        )
+        self.check(len(self.data), 4)

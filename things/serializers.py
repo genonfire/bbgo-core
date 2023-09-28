@@ -69,6 +69,17 @@ class FileIdSerializer(ModelSerializer):
         required=False
     )
 
+    class Meta:
+        model = models.Attachment
+        fields = [
+            'id',
+            'file',
+            'filename',
+            'content_type',
+            'size',
+            'created_at',
+        ]
+
 
 class OrderThingSerializer(ModelSerializer):
     class Meta:

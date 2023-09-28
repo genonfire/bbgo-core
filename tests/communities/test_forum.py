@@ -1,4 +1,5 @@
 from communities.tests import TestCase
+from utils.constants import Const
 
 
 class ForumPermissionTest(TestCase):
@@ -12,12 +13,12 @@ class ForumPermissionTest(TestCase):
                 'name': 'illegallysmolcats',
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': True,
                 'option': {
-                    'is_active': True,
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
-                }
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
+                },
             },
             auth=True
         )
@@ -29,11 +30,11 @@ class ForumPermissionTest(TestCase):
                 'name': 'illegallysmolcats',
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': True,
                 'option': {
-                    'is_active': True,
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             format='json'
@@ -52,10 +53,10 @@ class ForumCreateTest(TestCase):
                 'name': '',
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': True,
                 'option': {
-                    'is_active': True,
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -68,10 +69,10 @@ class ForumCreateTest(TestCase):
                 'name': None,
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': False,
                 'option': {
-                    'is_active': True,
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -95,11 +96,11 @@ class ForumCreateTest(TestCase):
             {
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': True,
                 'option': {
-                    'is_active': True,
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -112,11 +113,7 @@ class ForumCreateTest(TestCase):
                 'name': 'illegallysmolcats',
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
-                'option': {
-                    'is_active': True,
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
-                }
+                'is_active': True
             },
             auth=True
         )
@@ -128,11 +125,11 @@ class ForumCreateTest(TestCase):
                 'name': 'illegallysmolcats',
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': True,
                 'option': {
-                    'is_active': True,
                     'permission_read': 'anonymous',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -144,9 +141,9 @@ class ForumCreateTest(TestCase):
             {
                 'name': 'illegally smolcats',
                 'option': {
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -158,9 +155,9 @@ class ForumCreateTest(TestCase):
             {
                 'name': 'illegallysmolcats1',
                 'option': {
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -172,9 +169,9 @@ class ForumCreateTest(TestCase):
             {
                 'name': 'illegallysmolcats1',
                 'option': {
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
             },
             auth=True
@@ -182,18 +179,64 @@ class ForumCreateTest(TestCase):
         self.status(400)
 
     def test_forum_create_basic(self):
+        manager_member = self.create_user(username='member@a.com')
+        manager_staff = self.create_user(
+            username='staff@a.com',
+            is_staff=True
+        )
+        manager_list = [
+            manager_member.id,
+            manager_staff.id
+        ]
+
         self.post(
             '/api/communities/forum/',
             {
                 'name': 'illegallysmolcats',
                 'title': 'Illegally Small Cats',
                 'description': 'why so small',
+                'is_active': False,
+                'managers': [
+                    {
+                        'id': manager_member.id
+                    },
+                    {
+                        'id': manager_staff.id
+                    }
+                ],
                 'option': {
-                    'is_active': True,
-                    'permission_read': 'all',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_ALL,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER
                 }
+            },
+            auth=True
+        )
+        self.status(201)
+
+        self.check(self.data.get('name'), 'illegallysmolcats')
+        self.check(self.data.get('title'), 'Illegally Small Cats')
+        self.check(self.data.get('description'), 'why so small')
+        self.check_not(self.data.get('is_active'))
+
+        option = self.data.get('option')
+        self.check(option.get('permission_read'), Const.PERMISSION_ALL)
+        self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
+        self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
+
+        managers = self.data.get('managers')
+        self.check(len(managers), 2)
+        for manager in managers:
+            self.check_in(manager.get('id'), manager_list)
+
+    def test_forum_create_check_default_option(self):
+        self.post(
+            '/api/communities/forum/',
+            {
+                'name': 'illegallysmolcats',
+                'title': 'Illegally Small Cats',
+                'description': 'why so small',
+                'option': {}
             },
             auth=True
         )
@@ -204,9 +247,20 @@ class ForumCreateTest(TestCase):
         self.check(self.data.get('name'), 'illegallysmolcats')
         self.check(self.data.get('title'), 'Illegally Small Cats')
         self.check(self.data.get('description'), 'why so small')
-        self.check(option.get('permission_read'), 'all')
-        self.check(option.get('permission_write'), 'staff')
-        self.check(option.get('permission_reply'), 'member')
+        self.check(self.data.get('is_active'))
+        self.check(
+            option.get('permission_read'),
+            Const.FORUM_OPTION_DEFAULT.get('permission_read')
+        )
+        self.check(
+            option.get('permission_write'),
+            Const.FORUM_OPTION_DEFAULT.get('permission_write')
+        )
+        self.check(
+            option.get('permission_reply'),
+            Const.FORUM_OPTION_DEFAULT.get('permission_reply')
+        )
+        self.check(option.get('support_files'), False)
         self.check(managers[0].get('id'), self.user.id)
 
 
@@ -220,9 +274,10 @@ class ForumEditTest(TestCase):
             '/api/communities/forum/%d/' % self.forum.id,
             {
                 'option': {
-                    'permission_read': 'member',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
+                    'permission_read': Const.PERMISSION_MEMBER,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER,
+                    'support_files': True
                 }
             },
             auth=True
@@ -230,10 +285,10 @@ class ForumEditTest(TestCase):
         self.status(200)
 
         option = self.data.get('option')
-        self.check(option.get('permission_read'), 'member')
-        self.check(option.get('permission_write'), 'staff')
-        self.check(option.get('permission_reply'), 'member')
-        self.check(option.get('is_active'), self.forum.is_active())
+        self.check(option.get('permission_read'), Const.PERMISSION_MEMBER)
+        self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
+        self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
+        self.check(option.get('support_files'))
 
     def test_edit_forum_managers(self):
         user = self.user
@@ -267,12 +322,13 @@ class ForumEditTest(TestCase):
                 'name': 'test',
                 'title': 'test',
                 'description': 'test',
+                'is_active': False,
                 'option': {
-                    'is_active': False,
-                    'permission_read': 'member',
-                    'permission_write': 'staff',
-                    'permission_reply': 'member'
-                }
+                    'permission_read': Const.PERMISSION_MEMBER,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER,
+                    'support_files': True
+                },
             },
             auth=True
         )
@@ -282,10 +338,11 @@ class ForumEditTest(TestCase):
         self.check(self.data.get('name'), self.forum.name)
         self.check(self.data.get('title'), 'test')
         self.check(self.data.get('description'), 'test')
-        self.check(option.get('permission_read'), 'member')
-        self.check(option.get('permission_write'), 'staff')
-        self.check(option.get('permission_reply'), 'member')
-        self.check_not(option.get('is_active'))
+        self.check_not(self.data.get('is_active'))
+        self.check(option.get('permission_read'), Const.PERMISSION_MEMBER)
+        self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
+        self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
+        self.check(option.get('support_files'))
 
 
 class ForumDeleteTest(TestCase):

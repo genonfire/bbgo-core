@@ -1,22 +1,38 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from core.testcase import TestCase as CoreTestCase
+from utils.constants import Const
 
 from . import models
 
 
 class TestCase(CoreTestCase):
+    def file(
+        self,
+        name='test.txt',
+        content=b'test',
+        content_type='text/plain'
+    ):
+        return SimpleUploadedFile(name, content, content_type)
+
     def create_option(
         self,
-        is_active=True,
-        permission_read='all',
-        permission_write='all',
-        permission_reply='all'
+        permission_read=None,
+        permission_write=None,
+        permission_reply=None,
+        support_files=False
     ):
-        self.option = models.Option.objects.create(
-            is_active=is_active,
-            permission_read=permission_read,
-            permission_write=permission_write,
-            permission_reply=permission_reply
-        )
+        self.option = Const.FORUM_OPTION_DEFAULT
+
+        if permission_read:
+            self.option['permission_read'] = permission_read
+        if permission_write:
+            self.option['permission_write'] = permission_write
+        if permission_reply:
+            self.option['permission_reply'] = permission_reply
+        if support_files:
+            self.option['support_files'] = support_files
+
         return self.option
 
     def create_forum(
@@ -24,7 +40,9 @@ class TestCase(CoreTestCase):
         name='illegallysmolcats',
         title='Illegally Small Cats',
         description='Why so small',
-        option=None
+        managers=None,
+        option=None,
+        is_active=True
     ):
         if not option:
             option = self.create_option()
@@ -33,9 +51,14 @@ class TestCase(CoreTestCase):
             name=name,
             title=title,
             description=description,
-            option=option
+            option=option,
+            is_active=is_active
         )
-        self.forum.managers.add(self.user)
+        if managers:
+            for manager in managers:
+                self.forum.managers.add(manager)
+        else:
+            self.forum.managers.add(self.user)
         return self.forum
 
     def create_thread(

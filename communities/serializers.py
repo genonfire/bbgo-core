@@ -12,38 +12,13 @@ from utils.constants import Const
 from utils.debug import Debug  # noqa
 from utils.text import Text
 
+from things import serializers as things_serializers
+
 from . import models
 
 
-class OptionSerializer(ModelSerializer):
-    permission_list = [
-        'permission_read',
-        'permission_write',
-        'permission_reply',
-    ]
-
-    class Meta:
-        model = models.Option
-        fields = [
-            'id',
-            'is_active',
-            'permission_read',
-            'permission_write',
-            'permission_reply',
-        ]
-
-    def validate(self, attrs):
-        for permission in self.permission_list:
-            if not attrs.get(permission) in Const.PERMISSION_TYPE:
-                raise serializers.ValidationError({
-                    permission: [Text.INVALID_PERMISSION_TYPE]
-                })
-        return attrs
-
-
 class ForumSerializer(ModelSerializer):
-    option = OptionSerializer()
-    managers = accounts.serializers.StaffSerializer(many=True, required=False)
+    managers = accounts.serializers.UserIdSerializer(many=True, required=False)
 
     class Meta:
         model = models.Forum
@@ -54,17 +29,11 @@ class ForumSerializer(ModelSerializer):
             'description',
             'managers',
             'option',
-            'thread_count',
-            'reply_count',
-        ]
-        read_only_fields = [
-            'managers',
-            'option',
-            'thread_count',
-            'reply_count',
+            'is_active',
         ]
         extra_kwargs = {
             'name': Const.REQUIRED,
+            'option': Const.JSON_REQUIRED,
         }
 
     def validate(self, attrs):
@@ -77,18 +46,38 @@ class ForumSerializer(ModelSerializer):
 
         return attrs
 
-    def create(self, validated_data):
-        serializer = OptionSerializer(data=validated_data.get('option'))
-        serializer.is_valid(raise_exception=True)
-        option = serializer.save()
+    def set_option(self, data):
+        option = Const.FORUM_OPTION_DEFAULT
 
+        for attr, value in Const.FORUM_OPTION_DEFAULT.items():
+            option[attr] = data.get(attr, value)
+
+            if attr in Const.PERMISSION_LIST:
+                if not option[attr] in Const.PERMISSION_TYPE:
+                    raise serializers.ValidationError({
+                        attr: [Text.INVALID_PERMISSION_TYPE]
+                    })
+        return option
+
+    def update_managers(self, instance, managers):
+        instance.managers.set('')
+        for manager in managers:
+            instance.managers.add(manager.get('id'))
+
+    def create(self, validated_data):
         instance = self.Meta.model.objects.create(
             name=validated_data.get('name'),
             title=validated_data.get('title'),
             description=validated_data.get('description'),
-            option=option
+            option=self.set_option(validated_data.get('option')),
+            is_active=validated_data.get('is_active', True)
         )
-        instance.managers.add(self.context.get('request').user)
+
+        if validated_data.get('managers'):
+            self.update_managers(instance, validated_data.get('managers'))
+        else:
+            instance.managers.add(self.context.get('request').user)
+
         return instance
 
 
@@ -102,29 +91,20 @@ class ForumUpdateSerializer(ForumSerializer):
             'description',
             'managers',
             'option',
+            'is_active',
         ]
         read_only_fields = [
             'name',
         ]
 
-    def update_option(self, instance, value):
-        serializer = OptionSerializer(instance.option, data=value)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-    def update_managers(self, instance, managers):
-        instance.managers.set('')
-        for manager in managers:
-            instance.managers.add(manager.get('id'))
-
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():
-            if attr == 'option':
-                self.update_option(instance, value)
-            elif attr == 'managers':
+            if attr == 'managers':
                 if value:
                     self.update_managers(instance, value)
             else:
+                if attr == 'option':
+                    value = self.set_option(value)
                 setattr(instance, attr, value)
 
         instance.save()
@@ -141,6 +121,7 @@ class ForumListSerializer(ForumSerializer):
             'description',
             'managers',
             'option',
+            'is_active',
             'thread_count',
             'reply_count',
         ]
@@ -160,10 +141,11 @@ class ForumThreadSerializer(ForumSerializer):
             'managers',
             'permission_write',
             'permission_reply',
+            'support_files',
         ]
 
     def get_permission_write(self, obj):
-        if obj.option.permission_write == 'all':
+        if obj.option.get('permission_write') == Const.PERMISSION_ALL:
             return True
 
         user = self.context.get('request').user
@@ -171,13 +153,16 @@ class ForumThreadSerializer(ForumSerializer):
             return False
         elif user.is_staff:
             return True
-        elif obj.option.permission_write == 'member':
+        elif (
+            user.is_approved and
+            obj.option.get('permission_write') == Const.PERMISSION_MEMBER
+        ):
             return True
 
         return False
 
     def get_permission_reply(self, obj):
-        if obj.option.permission_reply == 'all':
+        if obj.option.get('permission_reply') == Const.PERMISSION_ALL:
             return True
 
         user = self.context.get('request').user
@@ -185,7 +170,10 @@ class ForumThreadSerializer(ForumSerializer):
             return False
         elif user.is_staff:
             return True
-        elif obj.option.permission_reply == 'member':
+        elif (
+            user.is_approved and
+            obj.option.get('permission_write') == Const.PERMISSION_MEMBER
+        ):
             return True
 
         return False
@@ -194,6 +182,7 @@ class ForumThreadSerializer(ForumSerializer):
 class ThreadSerializer(ModelSerializer):
     forum = ForumThreadSerializer(required=False)
     user = accounts.serializers.UsernameSerializer(required=False)
+    files = things_serializers.FileIdSerializer(many=True, required=False)
 
     class Meta:
         model = models.Thread
@@ -204,6 +193,7 @@ class ThreadSerializer(ModelSerializer):
             'name',
             'title',
             'content',
+            'files',
             'is_pinned',
             'is_deleted',
             'created_at',
@@ -233,6 +223,11 @@ class ThreadSerializer(ModelSerializer):
 
         return attrs
 
+    def update_files(self, instance, files):
+        instance.files.set('')
+        for file in files:
+            instance.files.add(file.get('id'))
+
     def create(self, validated_data):
         instance = self.Meta.model.objects.create(
             forum=self.context.get('view').forum,
@@ -241,11 +236,16 @@ class ThreadSerializer(ModelSerializer):
             title=validated_data.get('title'),
             content=validated_data.get('content'),
         )
+
+        if instance.user and validated_data.get('files'):
+            self.update_files(instance, validated_data.get('files'))
+
         return instance
 
 
 class ThreadReadSerializer(ThreadSerializer):
     has_permission = serializers.SerializerMethodField()
+    files = things_serializers.FileSerializer(many=True)
 
     class Meta:
         model = models.Thread
@@ -256,6 +256,7 @@ class ThreadReadSerializer(ThreadSerializer):
             'name',
             'title',
             'content',
+            'files',
             'is_pinned',
             'is_deleted',
             'created_at',
@@ -275,6 +276,10 @@ class ThreadReadSerializer(ThreadSerializer):
 
 
 class ThreadUpdateSerializer(ThreadSerializer):
+    files = things_serializers.FileIdSerializer(
+        many=True, required=False, read_only=True
+    )
+
     class Meta:
         model = models.Thread
         fields = [
@@ -284,6 +289,7 @@ class ThreadUpdateSerializer(ThreadSerializer):
             'name',
             'title',
             'content',
+            'files',
             'is_pinned',
             'is_deleted',
             'created_at',
@@ -301,6 +307,49 @@ class ThreadUpdateSerializer(ThreadSerializer):
             'title': Const.NOT_NULL,
             'content': Const.NOT_NULL,
         }
+
+
+class ThreadFileSerializer(ThreadSerializer):
+    files = things_serializers.FileIdSerializer(many=True)
+
+    class Meta:
+        model = models.Thread
+        fields = [
+            'id',
+            'files'
+        ]
+
+    def validate(self, attrs):
+        if self.context.get('view').action == 'delete_files':
+
+            for attr in attrs.get('files'):
+                attachment = attr.get('id')
+
+                if attachment not in self.instance.files.all():
+                    raise serializers.ValidationError(
+                        {f'file({attachment.id})': [Text.FILE_NOT_EXIST]}
+                    )
+
+        return attrs
+
+    def save(self):
+        if not self.instance.files:
+            self.instance.files.set('')
+
+        for file in self.validated_data.get('files'):
+            attachment = file.get('id')
+            self.instance.files.add(attachment)
+
+        self.instance.save()
+        return self.instance
+
+    def delete(self):
+        for file in self.validated_data.get('files'):
+            attachment = file.get('id')
+            self.instance.files.remove(attachment)
+
+        self.instance.save()
+        return self.instance
 
 
 class ThreadListSerializer(ModelSerializer):

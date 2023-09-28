@@ -10,33 +10,7 @@ from django.utils import timezone
 from utils.constants import Const
 from utils.debug import Debug  # noqa
 
-
-class OptionManager(models.Manager):
-    pass
-
-
-class Option(models.Model):
-    is_active = models.BooleanField(default=True)
-    permission_read = models.CharField(
-        max_length=Const.FIELD_MAX_LENGTH,
-        blank=True,
-        null=True,
-    )
-    permission_write = models.CharField(
-        max_length=Const.FIELD_MAX_LENGTH,
-        blank=True,
-        null=True,
-    )
-    permission_reply = models.CharField(
-        max_length=Const.FIELD_MAX_LENGTH,
-        blank=True,
-        null=True,
-    )
-
-    objects = OptionManager()
-
-    class Meta:
-        ordering = ['id']
+from . import tools
 
 
 class ForumManager(models.Manager):
@@ -45,8 +19,7 @@ class ForumManager(models.Manager):
             query = (
                 Q(name__icontains=q) |
                 Q(title__icontains=q) |
-                Q(description__icontains=q) |
-                Q(managers__username__iexact=q)
+                Q(description__icontains=q)
             )
         else:
             query = Q()
@@ -72,13 +45,11 @@ class Forum(models.Model):
         default='',
         blank=True,
     )
-    option = models.ForeignKey(
-        'Option',
-        related_name='forum_option',
-        on_delete=models.CASCADE,
+    option = models.JSONField(
         blank=True,
         null=True,
     )
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     objects = ForumManager()
@@ -92,8 +63,8 @@ class Forum(models.Model):
     def reply_count(self):
         return Reply.objects.filter(thread__forum=self).count()
 
-    def is_active(self):
-        return self.option.is_active
+    def support_files(self):
+        return self.option.get('support_files')
 
 
 class ThreadManager(models.Manager):
@@ -163,6 +134,24 @@ class Thread(models.Model):
         null=True,
     )
     content = models.TextField(null=True, blank=True)
+    up_users = models.ManyToManyField(
+        'accounts.User',
+        related_name='thread_up',
+        default='',
+        blank=True,
+    )
+    down_users = models.ManyToManyField(
+        'accounts.User',
+        related_name='thread_down',
+        default='',
+        blank=True,
+    )
+    files = models.ManyToManyField(
+        'things.Attachment',
+        related_name='thread_files',
+        default='',
+        blank=True,
+    )
     is_pinned = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -180,27 +169,18 @@ class Thread(models.Model):
             return None
 
     def date_or_time(self):
-        today = timezone.localtime()
-        modified_at = timezone.localtime(self.modified_at)
-
-        if modified_at.date() == today.date():
-            return {
-                'date': None,
-                'time': modified_at.time().strftime(Const.TIME_FORMAT_DEFAULT),
-            }
-        else:
-            return {
-                'date': modified_at.date(),
-                'time': None,
-            }
+        return tools.date_or_time(self.created_at)
 
 
 class ReplyManager(models.Manager):
-    def thread(self, thread):
+    def thread(self, thread, user):
         if isinstance(thread, Thread):
             thread_replies = Q(thread=thread)
         else:
             thread_replies = Q(thread__id=thread)
+
+        if not user.is_staff:
+            thread_replies &= Q(is_deleted=False)
 
         replies = self.filter(thread_replies).annotate(
             custom_order=Case(
@@ -226,7 +206,7 @@ class Reply(models.Model):
         blank=True,
         null=True,
     )
-    reply_id = models.IntegerField(default=0)
+    reply_id = models.BigIntegerField(default=0)
     user = models.ForeignKey(
         'accounts.User',
         related_name='reply_user',
@@ -241,6 +221,18 @@ class Reply(models.Model):
         null=True,
     )
     content = models.TextField(null=True, blank=True)
+    up_users = models.ManyToManyField(
+        'accounts.User',
+        related_name='reply_up',
+        default='',
+        blank=True,
+    )
+    down_users = models.ManyToManyField(
+        'accounts.User',
+        related_name='reply_down',
+        default='',
+        blank=True,
+    )
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(default=timezone.now)
@@ -257,16 +249,4 @@ class Reply(models.Model):
             return None
 
     def date_or_time(self):
-        today = timezone.localtime()
-        modified_at = timezone.localtime(self.modified_at)
-
-        if modified_at.date() == today.date():
-            return {
-                'date': None,
-                'time': modified_at.time().strftime(Const.TIME_FORMAT_DEFAULT),
-            }
-        else:
-            return {
-                'date': modified_at.date(),
-                'time': None,
-            }
+        return tools.date_or_time(self.created_at)

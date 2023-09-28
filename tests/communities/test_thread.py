@@ -1,4 +1,5 @@
 from communities.tests import TestCase
+from utils.constants import Const
 
 
 class ThreadPermissionTest(TestCase):
@@ -6,8 +7,7 @@ class ThreadPermissionTest(TestCase):
         self.create_user(is_staff=True)
 
     def test_permission_inactive_forum(self):
-        option = self.create_option(is_active=False)
-        self.create_forum(option=option)
+        self.create_forum(is_active=False)
         self.create_thread(forum=self.forum)
 
         self.get(
@@ -50,6 +50,10 @@ class ThreadPermissionTest(TestCase):
         self.status(403)
 
     def test_permission_read_all_write_all(self):
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_ALL
+        )
         self.create_forum()
 
         self.get(
@@ -87,8 +91,11 @@ class ThreadPermissionTest(TestCase):
         self.status(403)
 
     def test_permission_read_all_write_member(self):
-        option = self.create_option(permission_write='member')
-        self.create_forum(option=option)
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_MEMBER
+        )
+        self.create_forum()
         self.create_user(username='ee@a.com')
 
         self.post(
@@ -151,11 +158,11 @@ class ThreadPermissionTest(TestCase):
         self.status(200)
 
     def test_permission_read_member_write_member(self):
-        option = self.create_option(
-            permission_read='member',
-            permission_write='member'
+        self.create_option(
+            permission_read=Const.PERMISSION_MEMBER,
+            permission_write=Const.PERMISSION_MEMBER
         )
-        self.create_forum(option=option)
+        self.create_forum()
         self.create_user(username='ee@a.com')
 
         self.get(
@@ -202,11 +209,11 @@ class ThreadPermissionTest(TestCase):
         self.status(200)
 
     def test_permission_read_staff_write_staff_by_member(self):
-        option = self.create_option(
-            permission_read='staff',
-            permission_write='staff'
+        self.create_option(
+            permission_read=Const.PERMISSION_STAFF,
+            permission_write=Const.PERMISSION_STAFF
         )
-        self.create_forum(option=option)
+        self.create_forum()
 
         self.post(
             '/api/communities/f/%s/write/' % self.forum.name,
@@ -253,11 +260,11 @@ class ThreadPermissionTest(TestCase):
         self.status(403)
 
     def test_permission_read_staff_write_staff_by_staff(self):
-        option = self.create_option(
-            permission_read='staff',
-            permission_write='staff'
+        self.create_option(
+            permission_read=Const.PERMISSION_STAFF,
+            permission_write=Const.PERMISSION_STAFF
         )
-        self.create_forum(option=option)
+        self.create_forum()
 
         self.get(
             '/api/communities/f/%s/' % self.forum.name,
@@ -310,6 +317,10 @@ class ThreadPermissionTest(TestCase):
 class ThreadModelTest(TestCase):
     def setUp(self):
         self.create_user(username='user@a.com', is_staff=True)
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_ALL
+        )
         self.create_forum()
 
     def test_thread_write_edit_delete(self):
@@ -461,13 +472,13 @@ class ThreadModelTest(TestCase):
         self.check_not(self.data.get('is_pinned'))
 
         self.post(
-            '/api/communities/f/%s/%d/pin/' % (self.forum.name, thread_id),
+            '/api/communities/f/%s/pin/%d/' % (self.forum.name, thread_id),
             auth=True
         )
         self.status(403)
 
         self.post(
-            '/api/communities/f/%s/%d/unpin/' % (self.forum.name, thread_id),
+            '/api/communities/f/%s/unpin/%d/' % (self.forum.name, thread_id),
             auth=True
         )
         self.status(403)
@@ -475,14 +486,14 @@ class ThreadModelTest(TestCase):
         self.create_user(username='6@a.com', is_staff=True)
 
         self.post(
-            '/api/communities/f/%s/%d/pin/' % (self.forum.name, thread_id),
+            '/api/communities/f/%s/pin/%d/' % (self.forum.name, thread_id),
             auth=True
         )
         self.status(200)
         self.check(self.data.get('is_pinned'))
 
         self.post(
-            '/api/communities/f/%s/%d/unpin/' % (self.forum.name, thread_id),
+            '/api/communities/f/%s/unpin/%d/' % (self.forum.name, thread_id),
             auth=True
         )
         self.status(200)
@@ -492,6 +503,10 @@ class ThreadModelTest(TestCase):
 class ThreadWriteException(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_ALL
+        )
         self.create_forum()
 
     def test_write_thread_null(self):
@@ -630,12 +645,10 @@ class ThreadListTest(TestCase):
 
         trash = self.data.get('threads')[0]
         self.delete(
-            '/api/communities/f/%s/%d/' % (
-                self.forum.name,
-                self.data.get('threads')[0].get('id')
-            ),
+            '/api/communities/f/%s/%d/' % (self.forum.name, trash.get('id')),
             auth=True
         )
+
         self.get(
             '/api/communities/f/%s/?q=black' % self.forum.name,
             auth=True
@@ -655,14 +668,21 @@ class ThreadListTest(TestCase):
         )
 
         self.post(
-            '/api/communities/f/%s/%d/restore/' % (
+            '/api/communities/f/%s/restore/%d/' % (
                 self.forum.name, trash.get('id')
             ),
             auth=True
         )
         self.status(200)
-        self.check(self.data.get('id'), trash.get('id'))
-        self.check(self.data.get('title'), trash.get('title'))
+
+        self.get(
+            '/api/communities/f/%s/read/%d/' % (
+                self.forum.name,
+                trash.get('id')
+            ),
+            auth=True
+        )
+        self.status(200)
         self.check_not(self.data.get('is_deleted'))
 
 
@@ -671,11 +691,12 @@ class ThreadPermissionFieldTest(TestCase):
         self.create_user(is_staff=True)
 
     def test_permission_all(self):
-        option = self.create_option(
-            permission_write='all',
-            permission_reply='all'
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_ALL,
+            permission_reply=Const.PERMISSION_ALL
         )
-        self.create_forum(option=option)
+        self.create_forum()
         self.create_thread()
 
         self.get(
@@ -710,8 +731,9 @@ class ThreadPermissionFieldTest(TestCase):
 
     def test_permission_member(self):
         option = self.create_option(
-            permission_write='member',
-            permission_reply='member'
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_MEMBER,
+            permission_reply=Const.PERMISSION_MEMBER
         )
         self.create_forum(option=option)
         self.create_thread()
@@ -749,8 +771,9 @@ class ThreadPermissionFieldTest(TestCase):
 
     def test_permission_staff(self):
         option = self.create_option(
-            permission_write='staff',
-            permission_reply='staff'
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_STAFF,
+            permission_reply=Const.PERMISSION_STAFF
         )
         self.create_forum(option=option)
         self.create_thread()
@@ -824,7 +847,10 @@ class ThreadPinTest(TestCase):
         )
 
         self.post(
-            '/api/communities/f/%s/%d/pin/' % (self.forum.name, pin_thread.id),
+            '/api/communities/f/%s/pin/%d/' % (
+                self.forum.name,
+                pin_thread.id
+            ),
             auth=True
         )
         self.get(
@@ -836,3 +862,222 @@ class ThreadPinTest(TestCase):
             self.data.get('threads')[1].get('title'),
             'stay me unpinned'
         )
+
+
+class ThreadAttachmentTest(TestCase):
+    def setUp(self):
+        self.create_user(is_staff=True)
+        self.create_option(
+            permission_read=Const.PERMISSION_ALL,
+            permission_write=Const.PERMISSION_ALL,
+            permission_reply=Const.PERMISSION_MEMBER
+        )
+        self.create_forum()
+        self.create_thread(title='office')
+
+        self.post(
+            '/api/things/file/',
+            {
+                'file': self.file(name='word.doc')
+            },
+            format='multipart',
+            auth=True
+        )
+        self.word_id = self.data.get('id')
+
+        self.post(
+            '/api/things/file/',
+            {
+                'file': self.file(name='excel.xls')
+            },
+            format='multipart',
+            auth=True
+        )
+        self.excel_id = self.data.get('id')
+
+    def test_write_thread_with_files(self):
+        self.post(
+            '/api/communities/f/%s/write/' % self.forum.name,
+            {
+                'title': 'Hello',
+                'content': 'World',
+                'files': [
+                    {
+                        'id': self.word_id
+                    },
+                    {
+                        'id': self.excel_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(201)
+        self.check(len(self.data.get('files')), 2)
+        self.check(self.data.get('files')[0].get('filename'), 'excel.xls')
+        self.check(self.data.get('files')[1].get('filename'), 'word.doc')
+
+        self.patch(
+            '/api/communities/f/%s/%d/' % (
+                self.forum.name, self.data.get('id')
+            ),
+            {
+                'files': None
+            },
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data.get('files')), 2)
+
+    def test_try_to_write_thread_with_files_by_anonymous(self):
+        self.post(
+            '/api/communities/f/%s/write/' % self.forum.name,
+            {
+                'name': 'anonny',
+                'title': 'Hello',
+                'content': 'World',
+                'files': [
+                    {
+                        'id': self.word_id
+                    },
+                    {
+                        'id': self.excel_id
+                    }
+                ]
+            }
+        )
+        self.status(201)
+        self.check(len(self.data.get('files')), 0)
+
+    def test_attach_and_delete_files(self):
+        self.post(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.word_id
+                    },
+                    {
+                        "id": self.excel_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data.get('files')), 2)
+        self.check(self.data.get('files')[0].get('filename'), 'excel.xls')
+        self.check(self.data.get('files')[1].get('filename'), 'word.doc')
+
+        self.delete(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.word_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data.get('files')), 1)
+
+        self.delete(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.word_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(400)
+
+        self.get(
+            '/api/communities/f/%s/read/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data.get('files')), 1)
+        self.check(self.data.get('files')[0].get('filename'), 'excel.xls')
+
+    def test_delete_files_check_permission(self):
+        self.create_user(username='owner@a.com')
+
+        self.post(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.word_id
+                    },
+                    {
+                        "id": self.excel_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(200)
+
+        self.create_user(username='hacker@a.com')
+
+        self.delete(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.word_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(403)
+
+        self.delete(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.excel_id
+                    }
+                ]
+            }
+        )
+        self.status(403)
+
+        self.create_user(username='staff@a.com', is_staff=True)
+
+        self.delete(
+            '/api/communities/f/%s/%d/file/' % (
+                self.forum.name, self.thread.id
+            ),
+            {
+                'files': [
+                    {
+                        "id": self.word_id
+                    }
+                ]
+            },
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data.get('files')), 1)

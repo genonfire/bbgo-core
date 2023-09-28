@@ -38,24 +38,10 @@ urlpatterns = [
         }), name='thread'
     ),
     path(
-        'f/<str:forum>/<int:pk>/pin/', views.ThreadToggleViewSet.as_view({
-            'post': 'pin',
-        }), name='pin_thread'
-    ),
-    path(
-        'f/<str:forum>/<int:pk>/unpin/', views.ThreadToggleViewSet.as_view({
-            'post': 'unpin',
-        }), name='unpin_thread'
-    ),
-    path(
-        'f/<str:forum>/<int:pk>/restore/', views.ThreadRestoreViewSet.as_view({
-            'post': 'restore',
-        }), name='restore_thread'
-    ),
-    path(
-        'f/<str:forum>/read/<int:pk>/', views.ThreadReadOnlyViewSet.as_view({
-            'get': 'retrieve',
-        }), name='retrieve_thread'
+        'f/<str:forum>/<int:pk>/file/', views.ThreadFileViewSet.as_view({
+            'post': 'attach_files',
+            'delete': 'delete_files',
+        }), name='thread_file'
     ),
     path(
         'f/<str:forum>/', views.ThreadListViewSet.as_view({
@@ -63,9 +49,29 @@ urlpatterns = [
         }), name='threads'
     ),
     path(
+        'f/<str:forum>/read/<int:pk>/', views.ThreadReadOnlyViewSet.as_view({
+            'get': 'retrieve',
+        }), name='retrieve_thread'
+    ),
+    path(
+        'f/<str:forum>/pin/<int:pk>/', views.ThreadToggleViewSet.as_view({
+            'post': 'pin',
+        }), name='pin_thread'
+    ),
+    path(
+        'f/<str:forum>/unpin/<int:pk>/', views.ThreadToggleViewSet.as_view({
+            'post': 'unpin',
+        }), name='unpin_thread'
+    ),
+    path(
         'f/<str:forum>/trash/', views.ThreadTrashViewSet.as_view({
             'get': 'list',
         }), name='threads_trash'
+    ),
+    path(
+        'f/<str:forum>/restore/<int:pk>/', views.ThreadRestoreViewSet.as_view({
+            'post': 'restore',
+        }), name='restore_thread'
     ),
     path(
         'f/<int:pk>/reply/', views.ReplyViewSet.as_view({

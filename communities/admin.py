@@ -3,26 +3,6 @@ from django.contrib import admin
 from . import models
 
 
-@admin.register(models.Option)
-class OptionAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'is_active',
-        'permission_read',
-        'permission_write',
-        'permission_reply',
-    )
-    search_fields = (
-        'id',
-    )
-    ordering = (
-        '-id',
-    )
-    list_display_links = (
-        'id',
-    )
-
-
 @admin.register(models.Forum)
 class ForumAdmin(admin.ModelAdmin):
     list_display = (

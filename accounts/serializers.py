@@ -311,9 +311,9 @@ class StaffAdminSerializer(ModelSerializer):
         ]
 
 
-class StaffSerializer(ModelSerializer):
+class UserIdSerializer(ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.staff(),
+        queryset=models.User.objects.approved(),
         required=False
     )
 
