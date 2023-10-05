@@ -50,6 +50,7 @@ class _Const(object):
     QUERY_PARAM_FORUM = 'forum'
     QUERY_PARAM_USED = 'used'
     QUERY_PARAM_SUCCESS = 'success'
+    QUERY_PARAM_DELETED = 'delete'
 
     QUERY_PARAM_SORT = 'sort'
     QUERY_PARAM_SORT_LATEST = 'latest'
@@ -81,6 +82,9 @@ class _ConstProject(_Const):
     LANG_SURNAME_AHEAD = [
         'ko',
     ]
+
+    QUERY_PARAM_PINNED = 'pin'
+
     PERMISSION_LIST = [
         'permission_read',
         'permission_write',

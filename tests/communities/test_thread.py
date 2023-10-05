@@ -163,6 +163,15 @@ class ThreadPermissionTest(TestCase):
             permission_write=Const.PERMISSION_MEMBER
         )
         self.create_forum()
+
+        self.create_user(username='ea@a.com', is_approved=False)
+
+        self.get(
+            '/api/communities/f/%s/' % self.forum.name,
+            auth=True
+        )
+        self.status(403)
+
         self.create_user(username='ee@a.com')
 
         self.get(

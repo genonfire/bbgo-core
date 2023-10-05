@@ -16,6 +16,13 @@ class ResponseMixin():
     """
 
     q = ''
+    sort_default = {
+        Const.QUERY_PARAM_SORT_EARLIEST: 'id',
+        Const.QUERY_PARAM_SORT_LATEST: '-id',
+    }
+    sort_option = {
+    }
+    default_order = '-id'
     sensitive_parameters = [
         'password',
     ]
@@ -61,6 +68,13 @@ class ResponseMixin():
 
     def get_filter_list(self):
         return None
+
+    def get_order(self):
+        sort = self.sort_default | self.sort_option
+        return sort.get(
+            self.request.query_params.get(Const.QUERY_PARAM_SORT),
+            self.default_order
+        )
 
     def set_serializer(self, serializer_class, *args, **kwargs):
         kwargs['context'] = self.get_serializer_context()

@@ -392,6 +392,22 @@ class ThreadReplySerializer(ThreadListSerializer):
         ]
 
 
+class ThreadAdminSerializer(ThreadListSerializer):
+    class Meta:
+        model = models.Thread
+        fields = [
+            'id',
+            'forum_name',
+            'user',
+            'name',
+            'title',
+            'is_pinned',
+            'is_deleted',
+            'created_at',
+            'modified_at',
+        ]
+
+
 class ReplySerializer(ModelSerializer):
     thread = ThreadReplySerializer(required=False)
     user = accounts.serializers.UsernameSerializer(required=False)

@@ -1,6 +1,7 @@
 from django.urls import path
 
 from accounts import views as accounts_views
+from communities import views as communities_views
 
 
 urlpatterns = [
@@ -42,5 +43,10 @@ urlpatterns = [
         'auth_codes/<int:pk>/', accounts_views.AuthCodeAdminViewSet.as_view({
             'get': 'retrieve',
         }), name='auth_code'
+    ),
+    path(
+        'threads/', communities_views.ThreadAdminViewSet.as_view({
+            'get': 'list',
+        }), name='threads'
     ),
 ]

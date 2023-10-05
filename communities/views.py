@@ -257,3 +257,20 @@ class ReplyListViewSet(ReplyViewSet):
 
     def get_queryset(self):
         return self.model.objects.thread(self.thread, self.request.user)
+
+
+class _CommunityAdminViewSet(ModelViewSet):
+    permission_classes = (IsAdminUser,)
+
+    def get_filters(self):
+        return self.model.objects.admin_query(self.request.query_params)
+
+    def get_queryset(self):
+        return self.model.objects.admin_search(
+            self.q, self.get_filters()
+        ).order_by(self.get_order())
+
+
+class ThreadAdminViewSet(_CommunityAdminViewSet):
+    serializer_class = serializers.ThreadAdminSerializer
+    model = models.Thread

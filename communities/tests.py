@@ -67,7 +67,11 @@ class TestCase(CoreTestCase):
         user=None,
         name=None,
         title='Hello',
-        content='Kitty'
+        content='Kitty',
+        is_pinned=False,
+        is_deleted=False,
+        up_users=[],
+        down_users=[]
     ):
         if not forum:
             forum = self.forum
@@ -79,8 +83,19 @@ class TestCase(CoreTestCase):
             user=user,
             name=name,
             title=title,
-            content=content
+            content=content,
+            is_pinned=is_pinned,
+            is_deleted=is_deleted
         )
+
+        if up_users:
+            for up_user in up_users:
+                self.thread.up_users.add(up_user.id)
+
+        if down_users:
+            for down_user in down_users:
+                self.thread.down_users.add(down_user.id)
+
         return self.thread
 
     def create_reply(
@@ -89,7 +104,9 @@ class TestCase(CoreTestCase):
         reply_id=0,
         user=None,
         name=None,
-        content='Meow'
+        content='Meow',
+        up_users=[],
+        down_users=[]
     ):
         if not thread:
             thread = self.thread
@@ -103,4 +120,13 @@ class TestCase(CoreTestCase):
             name=name,
             content=content
         )
+
+        if up_users:
+            for up_user in up_users:
+                self.reply.up_users.add(up_user.id)
+
+        if down_users:
+            for down_user in down_users:
+                self.reply.down_users.add(down_user.id)
+
         return self.reply

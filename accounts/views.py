@@ -184,22 +184,13 @@ class _UserAdminViewSet(ModelViewSet):
     serializer_class = serializers.IAmSerializer
     model = models.User
     permission_classes = (IsAdminUser,)
+    sort_option = {
+        Const.QUERY_PARAM_USERNAME_DSC: '-username',
+        Const.QUERY_PARAM_USERNAME_ASC: 'username',
+    }
 
     def get_filters(self):
         return self.model.objects.query_active(self.request.query_params)
-
-    def get_order(self):
-        sort = self.request.query_params.get(Const.QUERY_PARAM_SORT)
-
-        if sort == Const.QUERY_PARAM_USERNAME_DSC:
-            ordering = '-username'
-        elif sort == Const.QUERY_PARAM_USERNAME_ASC:
-            ordering = 'username'
-        elif sort == Const.QUERY_PARAM_SORT_EARLIEST:
-            ordering = 'id'
-        else:
-            ordering = '-id'
-        return ordering
 
     def get_queryset(self):
         return self.model.objects.search(
@@ -209,7 +200,6 @@ class _UserAdminViewSet(ModelViewSet):
     def perform_delete(self, instance):
         if settings.USE_LOGIN_DEVICE:
             models.LoginDevice.objects.filter(user=instance).delete()
-
         tools.deactivate_account(instance, models.AuthCode)
 
 

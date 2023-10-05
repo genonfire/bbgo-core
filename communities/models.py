@@ -8,6 +8,7 @@ from django.db.models import (
 from django.utils import timezone
 
 from utils.constants import Const
+from utils.datautils import true_or_false
 from utils.debug import Debug  # noqa
 
 from . import tools
@@ -76,7 +77,7 @@ class ThreadManager(models.Manager):
         else:
             return self.filter(forum__name=forum).filter(is_deleted=False)
 
-    def search(self, forum, q):
+    def search_query(self, q):
         if q:
             query = (
                 Q(title__icontains=q) |
@@ -86,7 +87,10 @@ class ThreadManager(models.Manager):
             )
         else:
             query = Q()
-        return self.forum(forum).filter(query).distinct()
+        return query
+
+    def search(self, forum, q):
+        return self.forum(forum).filter(self.search_query(q)).distinct()
 
     def deleted(self, forum):
         if isinstance(forum, Forum):
@@ -95,16 +99,22 @@ class ThreadManager(models.Manager):
             return self.filter(forum__name=forum).filter(is_deleted=True)
 
     def trash(self, forum, q):
-        if q:
-            query = (
-                Q(title__icontains=q) |
-                Q(content__icontains=q) |
-                Q(name__icontains=q) |
-                Q(user__username__icontains=q)
-            )
-        else:
-            query = Q()
-        return self.deleted(forum).filter(query)
+        return self.deleted(forum).filter(self.search_query(q)).distinct()
+
+    def admin_query(self, q):
+        query = Q()
+        deleted = true_or_false(q.get(Const.QUERY_PARAM_DELETED))
+        if deleted:
+            query = Q(is_deleted=deleted)
+
+        pinned = true_or_false(q.get(Const.QUERY_PARAM_PINNED))
+        if pinned:
+            query &= Q(is_pinned=pinned)
+
+        return query
+
+    def admin_search(self, q, filters):
+        return self.filter(filters).filter(self.search_query(q)).distinct()
 
 
 class Thread(models.Model):
