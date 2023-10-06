@@ -274,3 +274,8 @@ class _CommunityAdminViewSet(ModelViewSet):
 class ThreadAdminViewSet(_CommunityAdminViewSet):
     serializer_class = serializers.ThreadAdminSerializer
     model = models.Thread
+
+
+class ReplyAdminViewSet(_CommunityAdminViewSet):
+    serializer_class = serializers.ReplyAdminSerializer
+    model = models.Reply

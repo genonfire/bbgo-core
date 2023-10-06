@@ -530,3 +530,22 @@ class ReplyListSerializer(ModelSerializer):
             return False
         else:
             return bool(user.id == obj.user.id)
+
+
+class ReplyAdminSerializer(ReplyListSerializer):
+    thread = ThreadReplySerializer(required=False)
+
+    class Meta:
+        model = models.Reply
+        fields = [
+            'id',
+            'forum_name',
+            'thread',
+            'reply_id',
+            'user',
+            'name',
+            'content',
+            'is_deleted',
+            'created_at',
+            'modified_at',
+        ]

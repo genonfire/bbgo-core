@@ -49,4 +49,9 @@ urlpatterns = [
             'get': 'list',
         }), name='threads'
     ),
+    path(
+        'replies/', communities_views.ReplyAdminViewSet.as_view({
+            'get': 'list',
+        }), name='replies'
+    ),
 ]

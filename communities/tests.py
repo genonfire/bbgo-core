@@ -105,6 +105,7 @@ class TestCase(CoreTestCase):
         user=None,
         name=None,
         content='Meow',
+        is_deleted=False,
         up_users=[],
         down_users=[]
     ):
@@ -118,7 +119,8 @@ class TestCase(CoreTestCase):
             reply_id=reply_id,
             user=user,
             name=name,
-            content=content
+            content=content,
+            is_deleted=is_deleted
         )
 
         if up_users:
