@@ -50,7 +50,7 @@ class TestCase(CoreTestCase):
         if not option:
             option = self.create_option()
 
-        self.forum = models.Forum.objects.create(
+        forum = models.Forum.objects.create(
             name=name,
             title=title,
             description=description,
@@ -59,10 +59,12 @@ class TestCase(CoreTestCase):
         )
         if managers:
             for manager in managers:
-                self.forum.managers.add(manager)
+                forum.managers.add(manager)
         else:
-            self.forum.managers.add(self.user)
-        return self.forum
+            forum.managers.add(self.user)
+
+        self.forum = forum
+        return forum
 
     def create_thread(
         self,
