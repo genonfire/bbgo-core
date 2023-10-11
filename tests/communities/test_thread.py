@@ -974,6 +974,9 @@ class ThreadVoteTest(TestCase):
         self.status(200)
 
     def test_thread_check_vote_number(self):
+        self.create_option(
+            permission_vote=Const.PERMISSION_MEMBER
+        )
         self.create_forum()
         self.create_thread(title='vote me')
         self.create_user(username='upper@a.com')
