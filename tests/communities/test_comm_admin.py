@@ -3,6 +3,8 @@ from communities.tests import TestCase
 
 class ThreadAdminTest(TestCase):
     def setUp(self):
+        self.john = self.create_user('john@a.com')
+        self.jane = self.create_user('jane@a.com')
         self.create_user(is_staff=True)
         self.forum1 = self.create_forum()
         self.create_thread(title='hi')
@@ -23,10 +25,16 @@ class ThreadAdminTest(TestCase):
 
     def test_thread_admin_list(self):
         self.forum2 = self.create_forum(name='forum2')
-        self.create_thread(title='hi', up_users=[self.user])
-        hello1 = self.create_thread(title='hello')
-        hello2 = self.create_thread(title='hello', is_pinned=True)
-        hello3 = self.create_thread(title='hello', is_deleted=True)
+        self.create_thread(title='hi')
+        hello1 = self.create_thread(
+            title='hello', up_users=[self.john], down_users=[self.jane]
+        )
+        hello2 = self.create_thread(
+            title='hello', is_pinned=True, up_users=[self.john, self.jane]
+        )
+        hello3 = self.create_thread(
+            title='hello', is_deleted=True, down_users=[self.john, self.jane]
+        )
 
         self.get(
             '/api/admin/threads/',
@@ -81,6 +89,20 @@ class ThreadAdminTest(TestCase):
         )
         self.check(len(self.data), 1)
         self.check(self.data[0].get('id'), hello1.id)
+
+        self.get(
+            '/api/admin/threads/?sort=up',
+            auth=True
+        )
+        self.check(self.data[0].get('id'), hello2.id)
+        self.check(self.data[1].get('id'), hello1.id)
+
+        self.get(
+            '/api/admin/threads/?sort=down',
+            auth=True
+        )
+        self.check(self.data[0].get('id'), hello3.id)
+        self.check(self.data[1].get('id'), hello1.id)
 
 
 class ReplyAdminTest(TestCase):

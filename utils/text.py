@@ -65,5 +65,7 @@ class _TextProject(_Text):
     Just for this project
     """
 
+    ERROR_VOTE_OWN_THREAD = _("Can't vote own thread.")
+
 
 Text = _TextProject()

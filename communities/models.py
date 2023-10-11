@@ -181,6 +181,12 @@ class Thread(models.Model):
     def date_or_time(self):
         return tools.date_or_time(self.created_at)
 
+    def up(self):
+        return self.up_users.count()
+
+    def down(self):
+        return self.down_users.count()
+
 
 class ReplyManager(models.Manager):
     def thread(self, thread, user):

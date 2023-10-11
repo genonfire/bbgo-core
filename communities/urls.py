@@ -74,6 +74,16 @@ urlpatterns = [
         }), name='restore_thread'
     ),
     path(
+        'f/<str:forum>/up/<int:pk>/', views.ThreadVoteViewSet.as_view({
+            'post': 'up',
+        }), name='up_thread'
+    ),
+    path(
+        'f/<str:forum>/down/<int:pk>/', views.ThreadVoteViewSet.as_view({
+            'post': 'down',
+        }), name='down_thread'
+    ),
+    path(
         'f/<int:pk>/reply/', views.ReplyViewSet.as_view({
             'post': 'create',
         }), name='reply'

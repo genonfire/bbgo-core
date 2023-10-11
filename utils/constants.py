@@ -84,11 +84,14 @@ class _ConstProject(_Const):
     ]
 
     QUERY_PARAM_PINNED = 'pin'
+    QUERY_PARAM_SORT_UP = 'up'
+    QUERY_PARAM_SORT_DOWN = 'down'
 
     PERMISSION_LIST = [
         'permission_read',
         'permission_write',
         'permission_reply',
+        'permission_vote',
     ]
     PERMISSION_ALL = 'all'
     PERMISSION_MEMBER = 'member'
@@ -101,12 +104,14 @@ class _ConstProject(_Const):
     P_READ = 'read'
     P_WRITE = 'write'
     P_REPLY = 'reply'
+    P_VOTE = 'vote'
 
     FORUM_OPTION_DEFAULT = {
         'permission_read': PERMISSION_MEMBER,
         'permission_write': PERMISSION_MEMBER,
         'permission_reply': PERMISSION_MEMBER,
-        'support_files': False
+        'permission_vote': PERMISSION_MEMBER,
+        'support_files': False,
     }
 
     MAX_REPLY_NESTING = 99

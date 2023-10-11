@@ -1,3 +1,4 @@
+import json
 import accounts
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -18,7 +19,7 @@ class TestCase(APITestCase):
     def response_log(self, response=None):
         if not response:
             response = self.response
-        print('#', response, getattr(response, 'data', ''))
+        print(response, json.dumps(getattr(response, 'data', ''), indent=4))
 
     def status(self, *args, **kwargs):
         if isinstance(args[0], RestResponse):

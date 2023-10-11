@@ -20,6 +20,7 @@ class TestCase(CoreTestCase):
         permission_read=None,
         permission_write=None,
         permission_reply=None,
+        permission_vote=None,
         support_files=False
     ):
         self.option = Const.FORUM_OPTION_DEFAULT
@@ -30,6 +31,8 @@ class TestCase(CoreTestCase):
             self.option['permission_write'] = permission_write
         if permission_reply:
             self.option['permission_reply'] = permission_reply
+        if permission_vote:
+            self.option['permission_vote'] = permission_vote
         if support_files:
             self.option['support_files'] = support_files
 

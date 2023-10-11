@@ -57,6 +57,13 @@ class ForumSerializer(ModelSerializer):
                     raise serializers.ValidationError({
                         attr: [Text.INVALID_PERMISSION_TYPE]
                     })
+
+            if (
+                attr == 'permission_vote' and
+                option[attr] == Const.PERMISSION_ALL
+            ):  # voter cannot be annonymous
+                option[attr] = value
+
         return option
 
     def update_managers(self, instance, managers):
@@ -128,8 +135,7 @@ class ForumListSerializer(ForumSerializer):
 
 
 class ForumThreadSerializer(ForumSerializer):
-    permission_write = serializers.SerializerMethodField()
-    permission_reply = serializers.SerializerMethodField()
+    permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Forum
@@ -139,44 +145,46 @@ class ForumThreadSerializer(ForumSerializer):
             'title',
             'description',
             'managers',
-            'permission_write',
-            'permission_reply',
+            'permissions',
             'support_files',
         ]
 
-    def get_permission_write(self, obj):
-        if obj.option.get('permission_write') == Const.PERMISSION_ALL:
-            return True
+    def get_permissions(self, obj):
+        write = False
+        reply = False
+        vote = False
 
         user = self.context.get('request').user
-        if not user.is_authenticated:
-            return False
-        elif user.is_staff:
-            return True
-        elif (
-            user.is_approved and
-            obj.option.get('permission_write') == Const.PERMISSION_MEMBER
-        ):
-            return True
+        if user.is_staff:
+            write = True
+            reply = True
+            vote = True
+        else:
+            permission_write = obj.option.get('permission_write')
+            permission_reply = obj.option.get('permission_reply')
+            permission_vote = obj.option.get('permission_vote')
 
-        return False
+            if user.is_authenticated and user.is_approved:
+                if permission_write == Const.PERMISSION_MEMBER:
+                    write = True
+                if permission_reply == Const.PERMISSION_MEMBER:
+                    reply = True
+                if permission_vote == Const.PERMISSION_MEMBER:
+                    vote = True
+            else:
+                if permission_write == Const.PERMISSION_ALL:
+                    write = True
+                if permission_reply == Const.PERMISSION_ALL:
+                    reply = True
+                if permission_vote == Const.PERMISSION_ALL:
+                    vote = True
 
-    def get_permission_reply(self, obj):
-        if obj.option.get('permission_reply') == Const.PERMISSION_ALL:
-            return True
-
-        user = self.context.get('request').user
-        if not user.is_authenticated:
-            return False
-        elif user.is_staff:
-            return True
-        elif (
-            user.is_approved and
-            obj.option.get('permission_write') == Const.PERMISSION_MEMBER
-        ):
-            return True
-
-        return False
+        permissions = {
+            'write': write,
+            'reply': reply,
+            'vote': vote,
+        }
+        return permissions
 
 
 class ThreadSerializer(ModelSerializer):
@@ -244,7 +252,7 @@ class ThreadSerializer(ModelSerializer):
 
 
 class ThreadReadSerializer(ThreadSerializer):
-    has_permission = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
     files = things_serializers.FileSerializer(many=True)
 
     class Meta:
@@ -257,14 +265,16 @@ class ThreadReadSerializer(ThreadSerializer):
             'title',
             'content',
             'files',
+            'up',
+            'down',
             'is_pinned',
             'is_deleted',
             'created_at',
             'modified_at',
-            'has_permission',
+            'editable',
         ]
 
-    def get_has_permission(self, obj):
+    def get_editable(self, obj):
         user = self.context.get('request').user
 
         if user.is_staff:
@@ -273,6 +283,16 @@ class ThreadReadSerializer(ThreadSerializer):
             return False
         else:
             return bool(user.id == obj.user.id)
+
+
+class ThreadVoteSerializer(ThreadReadSerializer):
+    class Meta:
+        model = models.Thread
+        fields = [
+            'id',
+            'up',
+            'down',
+        ]
 
 
 class ThreadUpdateSerializer(ThreadSerializer):
@@ -362,6 +382,8 @@ class ThreadListSerializer(ModelSerializer):
             'user',
             'name',
             'title',
+            'up',
+            'down',
             'is_pinned',
             'is_deleted',
             'date_or_time',
@@ -377,6 +399,9 @@ class ThreadTrashSerializer(ThreadListSerializer):
             'name',
             'title',
             'content',
+            'up',
+            'down',
+            'is_pinned',
             'is_deleted',
             'modified_at',
         ]
@@ -401,6 +426,8 @@ class ThreadAdminSerializer(ThreadListSerializer):
             'user',
             'name',
             'title',
+            'up',
+            'down',
             'is_pinned',
             'is_deleted',
             'created_at',
@@ -500,7 +527,7 @@ class ReplyUpdateSerializer(ReplySerializer):
 class ReplyListSerializer(ModelSerializer):
     user = accounts.serializers.UsernameSerializer()
     content = serializers.SerializerMethodField()
-    has_permission = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Reply
@@ -512,7 +539,7 @@ class ReplyListSerializer(ModelSerializer):
             'content',
             'is_deleted',
             'date_or_time',
-            'has_permission',
+            'editable',
         ]
 
     def get_content(self, obj):
@@ -521,7 +548,7 @@ class ReplyListSerializer(ModelSerializer):
         else:
             return obj.content
 
-    def get_has_permission(self, obj):
+    def get_editable(self, obj):
         user = self.context.get('request').user
 
         if user.is_staff:

@@ -207,7 +207,8 @@ class ForumCreateTest(TestCase):
                 'option': {
                     'permission_read': Const.PERMISSION_ALL,
                     'permission_write': Const.PERMISSION_STAFF,
-                    'permission_reply': Const.PERMISSION_MEMBER
+                    'permission_reply': Const.PERMISSION_MEMBER,
+                    'permission_vote': Const.PERMISSION_ALL,
                 }
             },
             auth=True
@@ -223,6 +224,7 @@ class ForumCreateTest(TestCase):
         self.check(option.get('permission_read'), Const.PERMISSION_ALL)
         self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
         self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
+        self.check(option.get('permission_vote'), Const.PERMISSION_MEMBER)
 
         managers = self.data.get('managers')
         self.check(len(managers), 2)
@@ -260,6 +262,10 @@ class ForumCreateTest(TestCase):
             option.get('permission_reply'),
             Const.FORUM_OPTION_DEFAULT.get('permission_reply')
         )
+        self.check(
+            option.get('permission_vote'),
+            Const.FORUM_OPTION_DEFAULT.get('permission_vote')
+        )
         self.check(option.get('support_files'), False)
         self.check(managers[0].get('id'), self.user.id)
 
@@ -269,7 +275,7 @@ class ForumEditTest(TestCase):
         self.create_user(is_staff=True)
         self.create_forum()
 
-    def test_edit_forum_option(self):
+    def test_edit_forum(self):
         self.patch(
             '/api/communities/forum/%d/' % self.forum.id,
             {
@@ -277,6 +283,7 @@ class ForumEditTest(TestCase):
                     'permission_read': Const.PERMISSION_MEMBER,
                     'permission_write': Const.PERMISSION_STAFF,
                     'permission_reply': Const.PERMISSION_MEMBER,
+                    'permission_vote': Const.PERMISSION_ALL,
                     'support_files': True
                 }
             },
@@ -288,6 +295,37 @@ class ForumEditTest(TestCase):
         self.check(option.get('permission_read'), Const.PERMISSION_MEMBER)
         self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
         self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
+        self.check(option.get('permission_vote'), Const.PERMISSION_MEMBER)
+        self.check(option.get('support_files'))
+
+        self.patch(
+            '/api/communities/forum/%d/' % self.forum.id,
+            {
+                'name': 'test',
+                'title': 'test',
+                'description': 'test',
+                'is_active': False,
+                'option': {
+                    'permission_read': Const.PERMISSION_MEMBER,
+                    'permission_write': Const.PERMISSION_STAFF,
+                    'permission_reply': Const.PERMISSION_MEMBER,
+                    'permission_vote': Const.PERMISSION_STAFF,
+                    'support_files': True
+                },
+            },
+            auth=True
+        )
+        self.status(200)
+
+        option = self.data.get('option')
+        self.check(self.data.get('name'), self.forum.name)
+        self.check(self.data.get('title'), 'test')
+        self.check(self.data.get('description'), 'test')
+        self.check_not(self.data.get('is_active'))
+        self.check(option.get('permission_read'), Const.PERMISSION_MEMBER)
+        self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
+        self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
+        self.check(option.get('permission_vote'), Const.PERMISSION_STAFF)
         self.check(option.get('support_files'))
 
     def test_edit_forum_managers(self):
@@ -314,35 +352,6 @@ class ForumEditTest(TestCase):
         self.status(200)
         self.check(self.data.get('managers')[0].get('id'), self.user.id)
         self.check(self.data.get('managers')[1].get('id'), user.id)
-
-    def test_edit_forum_all_fields(self):
-        self.patch(
-            '/api/communities/forum/%d/' % self.forum.id,
-            {
-                'name': 'test',
-                'title': 'test',
-                'description': 'test',
-                'is_active': False,
-                'option': {
-                    'permission_read': Const.PERMISSION_MEMBER,
-                    'permission_write': Const.PERMISSION_STAFF,
-                    'permission_reply': Const.PERMISSION_MEMBER,
-                    'support_files': True
-                },
-            },
-            auth=True
-        )
-        self.status(200)
-
-        option = self.data.get('option')
-        self.check(self.data.get('name'), self.forum.name)
-        self.check(self.data.get('title'), 'test')
-        self.check(self.data.get('description'), 'test')
-        self.check_not(self.data.get('is_active'))
-        self.check(option.get('permission_read'), Const.PERMISSION_MEMBER)
-        self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
-        self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
-        self.check(option.get('support_files'))
 
 
 class ForumDeleteTest(TestCase):

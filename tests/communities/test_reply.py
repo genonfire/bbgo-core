@@ -39,6 +39,7 @@ class ReplyPermissionTest(TestCase):
         self.check(len(self.data), 1)
         self.check(self.data[0].get('name'), 'tester')
         self.check(self.data[0].get('content'), 'test')
+        self.check_not(self.data[0].get('editable'))
 
         self.patch(
             '/api/communities/r/%d/' % reply_id,
@@ -101,10 +102,19 @@ class ReplyPermissionTest(TestCase):
         self.check_not(self.data.get('is_deleted'))
 
         self.get(
+            '/api/communities/f/%d/replies/' % thread_id,
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data), 1)
+        self.check(self.data[0].get('editable'))
+
+        self.get(
             '/api/communities/f/%d/replies/' % thread_id
         )
         self.status(200)
         self.check(len(self.data), 1)
+        self.check_not(self.data[0].get('editable'))
 
     def test_permission_reply_member(self):
         option = self.create_option(

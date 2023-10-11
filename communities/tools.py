@@ -33,6 +33,26 @@ def unpin_thread(instance):
     instance.save(update_fields=['is_pinned'])
 
 
+def up_thread(instance, user):
+    if user in instance.up_users.all():
+        instance.up_users.remove(user)
+    else:
+        instance.up_users.add(user)
+
+    if user in instance.down_users.all():
+        instance.down_users.remove(user)
+
+
+def down_thread(instance, user):
+    if user in instance.down_users.all():
+        instance.down_users.remove(user)
+    else:
+        instance.down_users.add(user)
+
+    if user in instance.up_users.all():
+        instance.up_users.remove(user)
+
+
 def delete_reply(instance):
     instance.is_deleted = True
     instance.modified_at = timezone.now()
@@ -46,6 +66,8 @@ def permission(forum, action):
         perm = forum.option.get('permission_write')
     elif action == Const.P_REPLY:
         perm = forum.option.get('permission_reply')
+    elif action == Const.P_VOTE:
+        perm = forum.option.get('permission_vote')
     else:
         raise AttributeError(
             "unknown action(%s) for forum(%s)" % (action, forum)
@@ -82,6 +104,13 @@ def reply_permission(forum):
         return [DenyAll]
 
     return permission(forum, Const.P_REPLY)
+
+
+def vote_permission(forum):
+    if not forum.is_active:
+        return [DenyAll]
+
+    return permission(forum, Const.P_VOTE)
 
 
 def date_or_time(in_time):

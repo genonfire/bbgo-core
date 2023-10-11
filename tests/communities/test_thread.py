@@ -423,7 +423,7 @@ class ThreadModelTest(TestCase):
             self.thread.date_or_time()
         )
 
-    def test_thread_has_permission(self):
+    def test_thread_editable(self):
         self.create_user(username='2@a.com')
         self.post(
             '/api/communities/f/%s/write/' % self.forum.name,
@@ -439,21 +439,21 @@ class ThreadModelTest(TestCase):
             '/api/communities/f/%s/read/%d/' % (self.forum.name, thread_id),
             auth=True
         )
-        self.check(self.data.get('has_permission'))
+        self.check(self.data.get('editable'))
 
         self.create_user(username='3@a.com')
         self.get(
             '/api/communities/f/%s/read/%d/' % (self.forum.name, thread_id),
             auth=True
         )
-        self.check_not(self.data.get('has_permission'))
+        self.check_not(self.data.get('editable'))
 
         self.create_user(username='4@a.com', is_staff=True)
         self.get(
             '/api/communities/f/%s/read/%d/' % (self.forum.name, thread_id),
             auth=True
         )
-        self.check(self.data.get('has_permission'))
+        self.check(self.data.get('editable'))
 
     def test_thread_pin_unpin(self):
         self.create_user(username='5@a.com')
@@ -711,23 +711,23 @@ class ThreadPermissionFieldTest(TestCase):
         self.get(
             '/api/communities/f/%s/' % self.forum.name
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
                 self.forum.name, self.thread.id
             )
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/' % self.forum.name,
             auth=True
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
@@ -735,8 +735,8 @@ class ThreadPermissionFieldTest(TestCase):
             ),
             auth=True
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
     def test_permission_member(self):
         option = self.create_option(
@@ -750,24 +750,24 @@ class ThreadPermissionFieldTest(TestCase):
         self.get(
             '/api/communities/f/%s/' % self.forum.name
         )
-        self.check_not(self.data.get('forum').get('permission_write'))
-        self.check_not(self.data.get('forum').get('permission_reply'))
+        self.check_not(self.data.get('forum').get('permissions').get('write'))
+        self.check_not(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
                 self.forum.name, self.thread.id
             )
         )
-        self.check_not(self.data.get('forum').get('permission_write'))
-        self.check_not(self.data.get('forum').get('permission_reply'))
+        self.check_not(self.data.get('forum').get('permissions').get('write'))
+        self.check_not(self.data.get('forum').get('permissions').get('reply'))
 
         self.create_user(username='member@a.com')
         self.get(
             '/api/communities/f/%s/' % self.forum.name,
             auth=True
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
@@ -775,8 +775,8 @@ class ThreadPermissionFieldTest(TestCase):
             ),
             auth=True
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
     def test_permission_staff(self):
         option = self.create_option(
@@ -790,23 +790,23 @@ class ThreadPermissionFieldTest(TestCase):
         self.get(
             '/api/communities/f/%s/' % self.forum.name
         )
-        self.check_not(self.data.get('forum').get('permission_write'))
-        self.check_not(self.data.get('forum').get('permission_reply'))
+        self.check_not(self.data.get('forum').get('permissions').get('write'))
+        self.check_not(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
                 self.forum.name, self.thread.id
             )
         )
-        self.check_not(self.data.get('forum').get('permission_write'))
-        self.check_not(self.data.get('forum').get('permission_reply'))
+        self.check_not(self.data.get('forum').get('permissions').get('write'))
+        self.check_not(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/' % self.forum.name,
             auth=True
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
@@ -814,16 +814,16 @@ class ThreadPermissionFieldTest(TestCase):
             ),
             auth=True
         )
-        self.check(self.data.get('forum').get('permission_write'))
-        self.check(self.data.get('forum').get('permission_reply'))
+        self.check(self.data.get('forum').get('permissions').get('write'))
+        self.check(self.data.get('forum').get('permissions').get('reply'))
 
         self.create_user(username='member@a.com')
         self.get(
             '/api/communities/f/%s/' % self.forum.name,
             auth=True
         )
-        self.check_not(self.data.get('forum').get('permission_write'))
-        self.check_not(self.data.get('forum').get('permission_reply'))
+        self.check_not(self.data.get('forum').get('permissions').get('write'))
+        self.check_not(self.data.get('forum').get('permissions').get('reply'))
 
         self.get(
             '/api/communities/f/%s/read/%d/' % (
@@ -831,8 +831,8 @@ class ThreadPermissionFieldTest(TestCase):
             ),
             auth=True
         )
-        self.check_not(self.data.get('forum').get('permission_write'))
-        self.check_not(self.data.get('forum').get('permission_reply'))
+        self.check_not(self.data.get('forum').get('permissions').get('write'))
+        self.check_not(self.data.get('forum').get('permissions').get('reply'))
 
 
 class ThreadPinTest(TestCase):
@@ -871,6 +871,191 @@ class ThreadPinTest(TestCase):
             self.data.get('threads')[1].get('title'),
             'stay me unpinned'
         )
+
+
+class ThreadVoteTest(TestCase):
+    def setUp(self):
+        self.create_user(is_staff=True)
+
+    def test_thread_check_vote_user(self):
+        self.create_forum()
+        self.create_thread(title='vote me')
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(400)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(400)
+
+    def test_thread_check_vote_permission_staff(self):
+        self.create_option(
+            permission_vote=Const.PERMISSION_STAFF
+        )
+        self.create_forum()
+        self.create_thread(title='vote me')
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            )
+        )
+        self.status(401)
+
+        self.create_user(username='voter@a.com')
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(403)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            )
+        )
+        self.status(401)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(403)
+
+    def test_thread_check_vote_permission_member(self):
+        self.create_option(
+            permission_vote=Const.PERMISSION_MEMBER
+        )
+        self.create_forum()
+        self.create_thread(title='vote me')
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            )
+        )
+        self.status(401)
+
+        self.create_user(username='voter@a.com')
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            )
+        )
+        self.status(401)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+
+    def test_thread_check_vote_number(self):
+        self.create_forum()
+        self.create_thread(title='vote me')
+        self.create_user(username='upper@a.com')
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 1)
+        self.check(self.data.get('down'), 0)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 0)
+        self.check(self.data.get('down'), 1)
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 0)
+        self.check(self.data.get('down'), 0)
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 1)
+        self.check(self.data.get('down'), 0)
+
+        self.create_user(username='downer@a.com')
+
+        self.post(
+            '/api/communities/f/%s/down/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 1)
+        self.check(self.data.get('down'), 1)
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 2)
+        self.check(self.data.get('down'), 0)
+
+        self.post(
+            '/api/communities/f/%s/up/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.thread.id)
+        self.check(self.data.get('up'), 1)
+        self.check(self.data.get('down'), 0)
 
 
 class ThreadAttachmentTest(TestCase):
