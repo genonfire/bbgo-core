@@ -898,10 +898,9 @@ class ThreadVoteTest(TestCase):
         self.status(400)
 
     def test_thread_check_vote_permission_staff(self):
-        self.create_option(
-            permission_vote=Const.PERMISSION_STAFF
-        )
-        self.create_forum()
+        option = Const.FORUM_OPTION_DEFAULT
+        option['permission_vote'] = Const.PERMISSION_STAFF
+        self.create_forum(option=option)
         self.create_thread(title='vote me')
 
         self.post(
