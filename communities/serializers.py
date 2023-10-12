@@ -537,6 +537,8 @@ class ReplyListSerializer(ModelSerializer):
             'user',
             'name',
             'content',
+            'up',
+            'down',
             'is_deleted',
             'date_or_time',
             'editable',
@@ -559,6 +561,16 @@ class ReplyListSerializer(ModelSerializer):
             return bool(user.id == obj.user.id)
 
 
+class ReplyVoteSerializer(ModelSerializer):
+    class Meta:
+        model = models.Reply
+        fields = [
+            'id',
+            'up',
+            'down',
+        ]
+
+
 class ReplyAdminSerializer(ReplyListSerializer):
     thread = ThreadReplySerializer(required=False)
 
@@ -572,6 +584,8 @@ class ReplyAdminSerializer(ReplyListSerializer):
             'user',
             'name',
             'content',
+            'up',
+            'down',
             'is_deleted',
             'created_at',
             'modified_at',

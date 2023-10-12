@@ -189,6 +189,9 @@ class Thread(models.Model):
 
 
 class ReplyManager(models.Manager):
+    def active(self):
+        return self.filter(is_deleted=False)
+
     def thread(self, thread, user):
         if isinstance(thread, Thread):
             thread_replies = Q(thread=thread)
@@ -294,3 +297,9 @@ class Reply(models.Model):
 
     def date_or_time(self):
         return tools.date_or_time(self.created_at)
+
+    def up(self):
+        return self.up_users.count()
+
+    def down(self):
+        return self.down_users.count()

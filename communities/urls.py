@@ -99,4 +99,14 @@ urlpatterns = [
             'get': 'list',
         }), name='replies'
     ),
+    path(
+        'r/<int:pk>/up/', views.ReplyVoteViewSet.as_view({
+            'post': 'up',
+        }), name='up_reply'
+    ),
+    path(
+        'r/<int:pk>/down/', views.ReplyVoteViewSet.as_view({
+            'post': 'down',
+        }), name='down_reply'
+    ),
 ]

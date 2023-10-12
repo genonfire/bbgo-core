@@ -485,3 +485,153 @@ class ReplyListTest(TestCase):
             auth=True
         )
         self.check(len(self.data), 4)
+
+
+class ReplyVoteTest(TestCase):
+    def setUp(self):
+        self.create_user(is_staff=True)
+
+    def test_reply_check_vote_user(self):
+        self.create_forum()
+        self.create_thread()
+        self.create_reply()
+
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id,
+            auth=True
+        )
+        self.status(400)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id,
+            auth=True
+        )
+        self.status(400)
+
+    def test_reply_check_vote_permission_staff(self):
+        self.create_option(
+            permission_vote=Const.PERMISSION_STAFF
+        )
+        self.create_forum()
+        self.create_thread()
+        self.create_reply()
+
+        self.create_user(username='voter@a.com')
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id,
+            auth=True
+        )
+        self.status(403)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id,
+            auth=True
+        )
+        self.status(403)
+
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id
+        )
+        self.status(401)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id
+        )
+        self.status(401)
+
+    def test_reply_check_vote_permission_member(self):
+        self.create_option(
+            permission_vote=Const.PERMISSION_MEMBER
+        )
+        self.create_forum()
+        self.create_thread()
+        self.create_reply()
+
+        self.create_user(username='voter@a.com')
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id
+        )
+        self.status(401)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id
+        )
+        self.status(401)
+
+    def test_reply_check_vote_number(self):
+        self.create_option(
+            permission_vote=Const.PERMISSION_MEMBER
+        )
+        self.create_forum()
+        self.create_thread()
+        self.create_reply()
+
+        self.create_user(username='upper@a.com')
+
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.reply.id)
+        self.check(self.data.get('up'), 1)
+        self.check(self.data.get('down'), 0)
+
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.reply.id)
+        self.check(self.data.get('up'), 0)
+        self.check(self.data.get('down'), 0)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.reply.id)
+        self.check(self.data.get('up'), 0)
+        self.check(self.data.get('down'), 1)
+
+        self.create_user(username='downer@a.com')
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.reply.id)
+        self.check(self.data.get('up'), 0)
+        self.check(self.data.get('down'), 2)
+
+        self.post(
+            '/api/communities/r/%d/down/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.reply.id)
+        self.check(self.data.get('up'), 0)
+        self.check(self.data.get('down'), 1)
+
+        self.post(
+            '/api/communities/r/%d/up/' % self.reply.id,
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('id'), self.reply.id)
+        self.check(self.data.get('up'), 1)
+        self.check(self.data.get('down'), 1)

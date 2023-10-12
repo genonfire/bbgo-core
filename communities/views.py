@@ -297,6 +297,43 @@ class ReplyListViewSet(ReplyViewSet):
         return self.model.objects.thread(self.thread, self.request.user)
 
 
+class ReplyVoteViewSet(ReplyViewSet):
+    serializer_class = serializers.ReplyVoteSerializer
+
+    def get_permissions(self):
+        self.reply = get_object_or_404(
+            models.Reply,
+            pk=self.kwargs[Const.QUERY_PARAM_PK]
+        )
+        permission_classes = tools.vote_permission(self.reply.thread.forum)
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        return self.model.objects.active()
+
+    def up(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user == request.user:
+            raise ValidationError({
+                'non_field_errors': [Text.ERROR_VOTE_OWN_REPLY]
+            })
+
+        tools.up_reply(instance, request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def down(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user == request.user:
+            raise ValidationError({
+                'non_field_errors': [Text.ERROR_VOTE_OWN_REPLY]
+            })
+
+        tools.down_reply(instance, request.user)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+
 class _CommunityAdminViewSet(ModelViewSet):
     permission_classes = (IsAdminUser,)
 

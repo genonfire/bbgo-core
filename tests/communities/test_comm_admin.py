@@ -107,6 +107,8 @@ class ThreadAdminTest(TestCase):
 
 class ReplyAdminTest(TestCase):
     def setUp(self):
+        self.john = self.create_user('john@a.com')
+        self.jane = self.create_user('jane@a.com')
         self.create_user(is_staff=True)
         self.forum1 = self.create_forum()
         self.create_thread(title='hi')
@@ -132,9 +134,16 @@ class ReplyAdminTest(TestCase):
         hello1 = self.create_thread(title='hello')
         hello2 = self.create_thread(title='hello', is_pinned=True)
 
-        self.create_reply(thread=hello1, content='hi')
-        self.create_reply(thread=hello2, content='hi')
-        self.create_reply(thread=hello2, content='hello', is_deleted=True)
+        reply1 = self.create_reply(
+            thread=hello1, content='hi', up_users=[self.john]
+        )
+        reply2 = self.create_reply(
+            thread=hello2, content='hi', down_users=[self.jane]
+        )
+        reply3 = self.create_reply(
+            thread=hello2, content='hello', is_deleted=True,
+            up_users=[self.john, self.jane]
+        )
 
         self.get(
             '/api/admin/replies/',
@@ -163,3 +172,23 @@ class ReplyAdminTest(TestCase):
         )
         self.check(len(self.data), 2)
         self.check(self.data[1].get('id'), reply_id)
+
+        self.get(
+            '/api/admin/replies/?deleted=false&q=hi&sort=up',
+            auth=True
+        )
+        self.check(self.data[0].get('id'), reply1.id)
+        self.check(self.data[1].get('id'), reply2.id)
+
+        self.get(
+            '/api/admin/replies/?sort=up',
+            auth=True
+        )
+        self.check(self.data[0].get('id'), reply3.id)
+        self.check(self.data[1].get('id'), reply1.id)
+
+        self.get(
+            '/api/admin/replies/?sort=down',
+            auth=True
+        )
+        self.check(self.data[0].get('id'), reply2.id)

@@ -53,6 +53,14 @@ def down_thread(instance, user):
         instance.up_users.remove(user)
 
 
+def up_reply(instance, user):
+    up_thread(instance, user)
+
+
+def down_reply(instance, user):
+    down_thread(instance, user)
+
+
 def delete_reply(instance):
     instance.is_deleted = True
     instance.modified_at = timezone.now()
