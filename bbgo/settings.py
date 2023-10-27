@@ -158,6 +158,7 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     'accounts',
+    'contents',
     'communities',
     'frontend',
     'things',
