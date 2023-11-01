@@ -113,6 +113,12 @@ class _ConstProject(_Const):
         'permission_vote': PERMISSION_MEMBER,
         'support_files': False,
     }
+    BLOG_OPTION_DEFAULT = {
+        'permission_read': PERMISSION_ALL,
+        'permission_write': PERMISSION_STAFF,
+        'permission_reply': PERMISSION_ALL,
+        'permission_vote': PERMISSION_ALL,
+    }
 
     MAX_REPLY_NESTING = 99
 

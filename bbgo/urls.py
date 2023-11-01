@@ -23,11 +23,11 @@ urlpatterns = i18n_patterns(
     path('bot/monthly/', MonthlyBotView.as_view(), name='monthly_bot'),
     path('bot/minute/', MinuteBotView.as_view(), name='minute_bot'),
     path('api/accounts/', include('accounts.urls', namespace='accounts')),
-    path('api/contents/', include('contents.urls', namespace='contents')),
     path(
         'api/communities/',
         include('communities.urls', namespace='communities')
     ),
+    path('api/contents/', include('contents.urls', namespace='contents')),
     path('api/things/', include('things.urls', namespace='things')),
     path('api/admin/', include('bbgo.admin_urls')),
     prefix_default_language=False
