@@ -87,6 +87,23 @@ class _ContentPermission():
             )
 
     def list(self, obj):
+        return self.permission(obj, self.P_LIST)
+
+    def read(self, obj):
+        return self.permission(obj, self.P_READ)
+
+    def write(self, obj):
+        return self.permission(obj, self.P_WRITE)
+
+    def reply(self, obj):
+        return self.permission(obj, self.P_REPLY)
+
+    def vote(self, obj):
+        return self.permission(obj, self.P_VOTE)
+
+
+class _ForumPermission(_ContentPermission):
+    def list(self, obj):
         if not obj.is_active:
             return [IsAdminUser]
 
@@ -118,3 +135,4 @@ class _ContentPermission():
 
 
 ContentPermission = _ContentPermission()
+ForumPermission = _ForumPermission()

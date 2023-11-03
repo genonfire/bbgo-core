@@ -8,7 +8,7 @@ from core.viewsets import (
     ReadOnlyModelViewSet,
 )
 from core.permissions import (
-    ContentPermission,
+    ForumPermission,
     IsAdminUser,
     IsApproved,
 )
@@ -56,7 +56,7 @@ class ThreadViewSet(ModelViewSet):
             models.Forum,
             name=self.kwargs[Const.QUERY_PARAM_FORUM]
         )
-        permission_classes = ContentPermission.write(self.forum)
+        permission_classes = ForumPermission.write(self.forum)
         return [permission() for permission in permission_classes]
 
 
@@ -156,7 +156,7 @@ class ThreadVoteViewSet(ThreadToggleViewSet):
             models.Forum,
             name=self.kwargs[Const.QUERY_PARAM_FORUM]
         )
-        permission_classes = ContentPermission.vote(self.forum)
+        permission_classes = ForumPermission.vote(self.forum)
         return [permission() for permission in permission_classes]
 
     def up(self, request, *args, **kwargs):
@@ -187,7 +187,7 @@ class ThreadReadOnlyViewSet(ReadOnlyModelViewSet):
     model = models.Thread
 
     def get_content_permission(self, forum):
-        return ContentPermission.read(forum)
+        return ForumPermission.read(forum)
 
     def get_permissions(self):
         self.forum = get_object_or_404(
@@ -208,7 +208,7 @@ class ThreadListViewSet(ThreadReadOnlyViewSet):
     serializer_class = serializers.ThreadListSerializer
 
     def get_content_permission(self, forum):
-        return ContentPermission.list(forum)
+        return ForumPermission.list(forum)
 
     def get_queryset(self):
         return self.model.objects.search(
@@ -261,7 +261,7 @@ class ReplyViewSet(ModelViewSet):
             models.Thread,
             pk=self.kwargs[Const.QUERY_PARAM_PK]
         )
-        permission_classes = ContentPermission.reply(self.thread.forum)
+        permission_classes = ForumPermission.reply(self.thread.forum)
         return [permission() for permission in permission_classes]
 
 
@@ -297,7 +297,7 @@ class ReplyListViewSet(ReplyViewSet):
             models.Thread,
             pk=self.kwargs[Const.QUERY_PARAM_PK]
         )
-        permission_classes = ContentPermission.read(self.thread.forum)
+        permission_classes = ForumPermission.read(self.thread.forum)
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
@@ -312,7 +312,7 @@ class ReplyVoteViewSet(ReplyViewSet):
             models.Reply,
             pk=self.kwargs[Const.QUERY_PARAM_PK]
         )
-        permission_classes = ContentPermission.vote(self.reply.thread.forum)
+        permission_classes = ForumPermission.vote(self.reply.thread.forum)
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
