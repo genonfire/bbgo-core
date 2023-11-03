@@ -17,6 +17,7 @@ class TestCase(CoreTestCase):
 
     def create_option(
         self,
+        permission_list=None,
         permission_read=None,
         permission_write=None,
         permission_reply=None,
@@ -25,6 +26,8 @@ class TestCase(CoreTestCase):
     ):
         self.option = Const.FORUM_OPTION_DEFAULT
 
+        if permission_list:
+            self.option['permission_list'] = permission_list
         if permission_read:
             self.option['permission_read'] = permission_read
         if permission_write:

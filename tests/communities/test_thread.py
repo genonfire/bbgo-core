@@ -51,6 +51,7 @@ class ThreadPermissionTest(TestCase):
 
     def test_permission_read_all_write_all(self):
         self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_ALL
         )
@@ -92,6 +93,7 @@ class ThreadPermissionTest(TestCase):
 
     def test_permission_read_all_write_member(self):
         self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_MEMBER
         )
@@ -159,6 +161,7 @@ class ThreadPermissionTest(TestCase):
 
     def test_permission_read_member_write_member(self):
         self.create_option(
+            permission_list=Const.PERMISSION_MEMBER,
             permission_read=Const.PERMISSION_MEMBER,
             permission_write=Const.PERMISSION_MEMBER
         )
@@ -217,8 +220,55 @@ class ThreadPermissionTest(TestCase):
         )
         self.status(200)
 
+    def test_permission_list_all_read_member(self):
+        self.create_option(
+            permission_list=Const.PERMISSION_ALL,
+            permission_read=Const.PERMISSION_MEMBER,
+            permission_write=Const.PERMISSION_MEMBER,
+        )
+        self.create_forum()
+
+        self.create_user(username='ea@a.com', is_approved=False)
+
+        self.get(
+            '/api/communities/f/%s/' % self.forum.name,
+            auth=True
+        )
+        self.status(200)
+
+        self.create_user(username='ee@a.com')
+
+        self.get(
+            '/api/communities/f/%s/' % self.forum.name
+        )
+        self.status(200)
+
+        self.post(
+            '/api/communities/f/%s/write/' % self.forum.name,
+            {
+                'name': 'tester',
+                'title': 'test',
+                'content': 'test content',
+            },
+            auth=True
+        )
+        self.status(201)
+
+        thread_id = self.data.get('id')
+        self.get(
+            '/api/communities/f/%s/read/%d/' % (self.forum.name, thread_id)
+        )
+        self.status(401)
+
+        self.get(
+            '/api/communities/f/%s/read/%d/' % (self.forum.name, thread_id),
+            auth=True
+        )
+        self.status(200)
+
     def test_permission_read_staff_write_staff_by_member(self):
         self.create_option(
+            permission_list=Const.PERMISSION_STAFF,
             permission_read=Const.PERMISSION_STAFF,
             permission_write=Const.PERMISSION_STAFF
         )
@@ -270,6 +320,7 @@ class ThreadPermissionTest(TestCase):
 
     def test_permission_read_staff_write_staff_by_staff(self):
         self.create_option(
+            permission_list=Const.PERMISSION_STAFF,
             permission_read=Const.PERMISSION_STAFF,
             permission_write=Const.PERMISSION_STAFF
         )
@@ -327,6 +378,7 @@ class ThreadModelTest(TestCase):
     def setUp(self):
         self.create_user(username='user@a.com', is_staff=True)
         self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_ALL
         )
@@ -513,6 +565,7 @@ class ThreadWriteException(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
         self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_ALL
         )
@@ -701,6 +754,7 @@ class ThreadPermissionFieldTest(TestCase):
 
     def test_permission_all(self):
         self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_ALL,
             permission_reply=Const.PERMISSION_ALL
@@ -740,6 +794,7 @@ class ThreadPermissionFieldTest(TestCase):
 
     def test_permission_member(self):
         option = self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_MEMBER,
             permission_reply=Const.PERMISSION_MEMBER
@@ -780,6 +835,7 @@ class ThreadPermissionFieldTest(TestCase):
 
     def test_permission_staff(self):
         option = self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_STAFF,
             permission_reply=Const.PERMISSION_STAFF
@@ -1065,6 +1121,7 @@ class ThreadAttachmentTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
         self.create_option(
+            permission_list=Const.PERMISSION_ALL,
             permission_read=Const.PERMISSION_ALL,
             permission_write=Const.PERMISSION_ALL,
             permission_reply=Const.PERMISSION_MEMBER

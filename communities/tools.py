@@ -68,7 +68,9 @@ def delete_reply(instance):
 
 
 def permission(forum, action):
-    if action == Const.P_READ:
+    if action == Const.P_LIST:
+        perm = forum.option.get('permission_list')
+    elif action == Const.P_READ:
         perm = forum.option.get('permission_read')
     elif action == Const.P_WRITE:
         perm = forum.option.get('permission_write')
@@ -91,6 +93,13 @@ def permission(forum, action):
         raise AttributeError(
             "unknown permission(%s) for forum(%s)" % (perm, forum)
         )
+
+
+def list_permission(forum):
+    if not forum.is_active:
+        return [IsAdminUser]
+
+    return permission(forum, Const.P_LIST)
 
 
 def read_permission(forum):

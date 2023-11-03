@@ -185,12 +185,15 @@ class ThreadReadOnlyViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.ThreadReadSerializer
     model = models.Thread
 
+    def forum_permission(self, forum):
+        return tools.read_permission(forum)
+
     def get_permissions(self):
         self.forum = get_object_or_404(
             models.Forum,
             name=self.kwargs[Const.QUERY_PARAM_FORUM]
         )
-        permission_classes = tools.read_permission(self.forum)
+        permission_classes = self.forum_permission(self.forum)
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
@@ -202,6 +205,9 @@ class ThreadReadOnlyViewSet(ReadOnlyModelViewSet):
 
 class ThreadListViewSet(ThreadReadOnlyViewSet):
     serializer_class = serializers.ThreadListSerializer
+
+    def forum_permission(self, forum):
+        return tools.list_permission(forum)
 
     def get_queryset(self):
         return self.model.objects.search(
