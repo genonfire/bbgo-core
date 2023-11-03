@@ -41,6 +41,7 @@ class BlogOptionTest(TestCase):
                     'b'
                 ],
                 'option': {
+                    'permission_list': Const.PERMISSION_ALL,
                     'permission_read': Const.PERMISSION_ALL,
                     'permission_write': Const.PERMISSION_ALL,
                     'permission_reply': Const.PERMISSION_MEMBER,
@@ -55,6 +56,7 @@ class BlogOptionTest(TestCase):
         self.check(self.data.get('category'), ['a', 'b'])
 
         option = self.data.get('option')
+        self.check(option.get('permission_list'), Const.PERMISSION_ALL)
         self.check(option.get('permission_read'), Const.PERMISSION_ALL)
         self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
         self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
@@ -81,9 +83,8 @@ class BlogOptionTest(TestCase):
         self.check(self.data.get('category'), ['c'])
 
         option = self.data.get('option')
+        self.check(option.get('permission_list'), Const.PERMISSION_ALL)
         self.check(option.get('permission_read'), Const.PERMISSION_MEMBER)
         self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
         self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
         self.check(option.get('permission_vote'), Const.PERMISSION_ALL)
-
-        self.create_blog_option()

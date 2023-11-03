@@ -117,6 +117,7 @@ class _ConstProject(_Const):
         'support_files': False,
     }
     BLOG_OPTION_DEFAULT = {
+        'permission_list': PERMISSION_ALL,
         'permission_read': PERMISSION_ALL,
         'permission_write': PERMISSION_STAFF,
         'permission_reply': PERMISSION_ALL,
