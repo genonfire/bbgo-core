@@ -102,11 +102,6 @@ class _ConstProject(_Const):
         PERMISSION_MEMBER,
         PERMISSION_STAFF,
     ]
-    P_LIST = 'list'
-    P_READ = 'read'
-    P_WRITE = 'write'
-    P_REPLY = 'reply'
-    P_VOTE = 'vote'
 
     FORUM_OPTION_DEFAULT = {
         'permission_list': PERMISSION_MEMBER,
