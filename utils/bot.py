@@ -29,7 +29,7 @@ def minute_task():
 
 
 class DailyBotView(APIView):
-    permission_classes = (IsAdminUser,)
+    permission_classes = [IsAdminUser]
 
     def post(self, request, *args, **kwargs):
         run_thread(daily_task)

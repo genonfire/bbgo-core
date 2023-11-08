@@ -26,4 +26,4 @@ class BlogOptionViewSet(ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def get_object(self):
-        return tools.get_blog_option(self.model)
+        return tools.get_blog_option(models.BlogOption)

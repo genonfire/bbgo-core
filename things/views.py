@@ -38,7 +38,7 @@ class AttachmentViewSet(ModelViewSet):
 class AttachmentManageViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.FileSerializer
     model = models.Attachment
-    permission_classes = (IsAdminUser,)
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         return self.model.objects.search(self.q)

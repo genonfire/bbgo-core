@@ -33,12 +33,12 @@ from . import (
 
 class UserSignupView(CreateAPIView):
     serializer_class = serializers.SignupSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
 
 class UserLoginView(GenericAPIView):
     serializer_class = serializers.LoginSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
     def get_iam_serializer(self):
         if settings.USE_LOGIN_DEVICE:
@@ -84,7 +84,7 @@ class UserLoginView(GenericAPIView):
 
 
 class UserLogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         if settings.USE_LOGIN_DEVICE:
@@ -107,7 +107,7 @@ class UserLogoutView(APIView):
 
 class DeactivateAccountView(GenericAPIView):
     serializer_class = serializers.DeactivateAccountSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -123,7 +123,7 @@ class DeactivateAccountView(GenericAPIView):
 class LoginDeviceViewSet(ModelViewSet):
     serializer_class = serializers.LoginDeviceSerializer
     model = models.LoginDevice
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -142,7 +142,7 @@ class LoginDeviceViewSet(ModelViewSet):
 
 class PasswordChangeView(GenericAPIView):
     serializer_class = serializers.PasswordChangeSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
     sensitive_parameters = [
         'old_password',
         'new_password',
@@ -151,12 +151,12 @@ class PasswordChangeView(GenericAPIView):
 
 class PasswordResetView(GenericAPIView):
     serializer_class = serializers.PasswordResetSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
 
 class PasswordResetConfirmView(GenericAPIView):
     serializer_class = serializers.PasswordResetConfirmSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
     sensitive_parameters = [
         'new_password',
     ]
@@ -165,14 +165,14 @@ class PasswordResetConfirmView(GenericAPIView):
 class UserSettingViewSet(ModelViewSet):
     serializer_class = serializers.UserSettingSerializer
     model = models.User
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
 
 
 class ConnectView(UserLoginView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         data = self.login(request, request.user)
@@ -183,7 +183,7 @@ class ConnectView(UserLoginView):
 class _UserAdminViewSet(ModelViewSet):
     serializer_class = serializers.IAmSerializer
     model = models.User
-    permission_classes = (IsAdminUser,)
+    permission_classes = [IsAdminUser]
     sort_option = {
         Const.QUERY_PARAM_USERNAME_DSC: '-username',
         Const.QUERY_PARAM_USERNAME_ASC: 'username',
@@ -262,7 +262,7 @@ class UserAdminExportViewSet(UserAdminViewSet, ExcelViewSet):
 class AuthCodeViewSet(ModelViewSet):
     serializer_class = serializers.AuthCodeSerializer
     model = models.AuthCode
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return self.model.objects.all()
@@ -363,7 +363,7 @@ class AuthCodeAnswerViewSet(AuthCodeViewSet):
 
 
 class AuthCodeAdminViewSet(AuthCodeViewSet):
-    permission_classes = (IsAdminUser,)
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         used = true_or_false(
