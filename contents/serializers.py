@@ -64,6 +64,7 @@ class BlogSerializer(ModelSerializer):
             'category',
             'image',
             'tags',
+            'is_published',
             'created_at',
             'modified_at',
         ]
@@ -97,7 +98,7 @@ class BlogSerializer(ModelSerializer):
             category=validated_data.get('category'),
             image=get_object_from_dict(validated_data.get('image')),
             tags=validated_data.get('tags'),
-            is_published=True
+            is_published=validated_data.get('is_published', True)
         )
 
         return instance

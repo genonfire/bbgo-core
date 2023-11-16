@@ -312,6 +312,7 @@ class BlogWriteTest(TestCase):
                     'id': thumbnail_id
                 },
                 'tags': 'asmr, hobby',
+                'is_published': True
             },
             auth=True
         )
@@ -322,3 +323,18 @@ class BlogWriteTest(TestCase):
         self.check(self.data.get('category'), 'asmr')
         self.check(self.data.get('image').get('id'), thumbnail_id)
         self.check(self.data.get('tags'), 'asmr, hobby')
+        self.check(self.data.get('is_published'))
+
+        self.post(
+            '/api/contents/blog/',
+            {
+                'title': 'test2',
+                'content': 'hello',
+                'is_published': False
+            },
+            auth=True
+        )
+        self.status(201)
+        self.check_not(self.data.get('category'))
+        self.check_not(self.data.get('tags'))
+        self.check_not(self.data.get('is_published'))
