@@ -11,4 +11,9 @@ urlpatterns = [
             'patch': 'partial_update',
         }), name='blog_option'
     ),
+    path(
+        'blog/', views.BlogViewSet.as_view({
+            'post': 'create',
+        }), name='new_blog'
+    ),
 ]

@@ -43,6 +43,15 @@ class IsAdminUser(rest_permission.IsAdminUser):
     pass
 
 
+class IsAdminOrReadOnly(rest_permission.BasePermission):
+    def has_permission(self, request, view):
+        return bool(
+            request.method in rest_permission.SAFE_METHODS or
+            request.user and
+            request.user.is_staff
+        )
+
+
 class IsSuperUser(rest_permission.BasePermission):
     def has_permission(self, request, view):
         return bool(

@@ -2,8 +2,8 @@ from core.viewsets import (
     ModelViewSet,
 )
 from core.permissions import (
-    AllowAny,
-    IsAdminUser,
+    ContentPermission,
+    IsAdminOrReadOnly,
 )
 from utils.debug import Debug  # noqa
 
@@ -17,13 +17,17 @@ from . import (
 class BlogOptionViewSet(ModelViewSet):
     serializer_class = serializers.BlogOptionSerializer
     model = models.BlogOption
-
-    def get_permissions(self):
-        if self.action == 'retrieve':
-            permission_classes = [AllowAny]
-        else:
-            permission_classes = [IsAdminUser]
-        return [permission() for permission in permission_classes]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self):
         return tools.get_blog_option(models.BlogOption)
+
+
+class BlogViewSet(ModelViewSet):
+    serializer_class = serializers.BlogSerializer
+    model = models.Blog
+
+    def get_permissions(self):
+        blog_option = tools.get_blog_option(models.BlogOption)
+        permission_classes = ContentPermission.write(blog_option)
+        return [permission() for permission in permission_classes]
