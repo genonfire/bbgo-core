@@ -119,7 +119,7 @@ class BlogUpdateTest(TestCase):
         )
         self.thumbnail_id = self.data.get('id')
 
-    def test_blog_update_check_fields_by_staff(self):
+    def test_blog_update_check_fields(self):
         self.patch(
             '/api/contents/blog_option/',
             {
@@ -158,7 +158,6 @@ class BlogUpdateTest(TestCase):
                 'category': 'hobby',
                 'image': None,
                 'tags': None,
-                'is_published': False
             },
             auth=True
         )
@@ -168,6 +167,25 @@ class BlogUpdateTest(TestCase):
         self.check(self.data.get('category'), 'hobby')
         self.check_not(self.data.get('image'))
         self.check_not(self.data.get('tags'))
+        self.check(self.data.get('is_published'))
+
+        self.patch(
+            '/api/contents/blog/%d/' % blog_id,
+            {
+                'image': {
+                    'id': self.thumbnail_id
+                },
+                'tags': 'hobby, asmr',
+                'is_published': False,
+            },
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('title'), 'test2')
+        self.check(self.data.get('content'), 'hello')
+        self.check(self.data.get('category'), 'hobby')
+        self.check(self.data.get('image').get('id'), self.thumbnail_id)
+        self.check(self.data.get('tags'), 'hobby, asmr')
         self.check_not(self.data.get('is_published'))
 
         self.delete(
@@ -178,58 +196,6 @@ class BlogUpdateTest(TestCase):
 
         self.get(
             '/api/contents/blogs/%d/' % blog_id,
-            auth=True
-        )
-        self.status(404)
-
-    def test_blog_update_check_fields_by_member(self):
-        self.patch(
-            '/api/contents/blog_option/',
-            {
-                'category': [
-                    'hobby',
-                    'asmr'
-                ],
-                'option': {
-                    'permission_write': Const.PERMISSION_MEMBER,
-                }
-            },
-            auth=True
-        )
-
-        self.create_user(username='blogger@a.com')
-        self.create_blog(
-            title='test2',
-            content='hello',
-            category='hobby',
-        )
-
-        self.patch(
-            '/api/contents/blog/%d/' % self.blog.id,
-            {
-                'image': {
-                    'id': self.thumbnail_id
-                },
-                'tags': 'hobby, asmr'
-            },
-            auth=True
-        )
-        self.status(200)
-        self.check(self.data.get('title'), 'test2')
-        self.check(self.data.get('content'), 'hello')
-        self.check(self.data.get('category'), 'hobby')
-        self.check(self.data.get('image').get('id'), self.thumbnail_id)
-        self.check(self.data.get('tags'), 'hobby, asmr')
-        self.check(self.data.get('is_published'))
-
-        self.delete(
-            '/api/contents/blog/%d/' % self.blog.id,
-            auth=True
-        )
-        self.status(204)
-
-        self.get(
-            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(404)
