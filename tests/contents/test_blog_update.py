@@ -109,17 +109,6 @@ class BlogUpdateTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
 
-        self.post(
-            '/api/things/file/',
-            {
-                'file': self.png(name='thumbnail.png')
-            },
-            format='multipart',
-            auth=True
-        )
-        self.thumbnail_id = self.data.get('id')
-
-    def test_blog_update_check_fields_by_staff(self):
         self.patch(
             '/api/contents/blog_option/',
             {
@@ -134,6 +123,17 @@ class BlogUpdateTest(TestCase):
             auth=True
         )
 
+        self.post(
+            '/api/things/file/',
+            {
+                'file': self.png(name='thumbnail.png')
+            },
+            format='multipart',
+            auth=True
+        )
+        self.thumbnail_id = self.data.get('id')
+
+    def test_blog_update_check_fields_by_staff(self):
         self.post(
             '/api/contents/blog/',
             {
@@ -182,7 +182,11 @@ class BlogUpdateTest(TestCase):
         )
         self.status(404)
 
-    def test_blog_update_check_fields_by_member(self):
+
+class BlogUpdateTestMember(TestCase):
+    def setUp(self):
+        self.create_user(is_staff=True)
+
         self.patch(
             '/api/contents/blog_option/',
             {
@@ -197,6 +201,17 @@ class BlogUpdateTest(TestCase):
             auth=True
         )
 
+        self.post(
+            '/api/things/file/',
+            {
+                'file': self.png(name='thumbnail.png')
+            },
+            format='multipart',
+            auth=True
+        )
+        self.thumbnail_id = self.data.get('id')
+
+    def test_blog_update_check_fields_by_member(self):
         self.create_user(username='blogger@a.com')
         self.create_blog(
             title='test2',
