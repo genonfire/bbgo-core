@@ -12,10 +12,7 @@ from utils.debug import Debug  # noqa
 from utils.text import Text
 from things import serializers as things_serializers
 
-from . import (
-    models,
-    tools,
-)
+from . import models
 
 
 class BlogOptionSerializer(ModelSerializer):
@@ -58,6 +55,7 @@ class BlogSerializer(ModelSerializer):
     class Meta:
         model = models.Blog
         fields = [
+            'id',
             'user',
             'title',
             'content',
@@ -79,7 +77,7 @@ class BlogSerializer(ModelSerializer):
         }
 
     def validate(self, attrs):
-        option = tools.get_blog_option(models.BlogOption)
+        option = models.BlogOption.objects.get()
         category = attrs.get('category')
 
         if category:
@@ -102,3 +100,38 @@ class BlogSerializer(ModelSerializer):
         )
 
         return instance
+
+
+class BlogListSerializer(BlogSerializer):
+    class Meta:
+        model = models.Blog
+        fields = [
+            'id',
+            'user',
+            'title',
+            'category',
+            'image',
+            'tags',
+            'like',
+            'is_published',
+            'created_at',
+            'modified_at',
+        ]
+
+
+class BlogReadSerializer(BlogSerializer):
+    class Meta:
+        model = models.Blog
+        fields = [
+            'id',
+            'user',
+            'title',
+            'content',
+            'category',
+            'image',
+            'tags',
+            'like',
+            'is_published',
+            'created_at',
+            'modified_at',
+        ]

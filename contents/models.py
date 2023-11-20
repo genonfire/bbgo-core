@@ -1,8 +1,16 @@
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 from utils.constants import Const
+from utils.debug import Debug  # noqa
+
+
+class BlogOptionManager(models.Manager):
+    def get(self):
+        return self.get_or_create(name=settings.SITE_NAME)[0]
 
 
 class BlogOption(models.Model):
@@ -30,9 +38,40 @@ class BlogOption(models.Model):
         null=True,
     )
 
+    objects = BlogOptionManager()
+
 
 class BlogManager(models.Manager):
-    pass
+    def published(self):
+        return self.filter(is_published=True)
+
+    def query_category(self, q):
+        query = Q()
+        category = q.get(Const.QUERY_PARAM_CATEGORY)
+        tag = q.get(Const.QUERY_PARAM_TAG)
+
+        if category:
+            query = Q(category=category)
+        if tag:
+            query &= Q(tags__icontains=tag)
+
+        return query
+
+    def search_query(self, q):
+        if q:
+            query = (
+                Q(title__icontains=q) |
+                Q(content__icontains=q) |
+                Q(tags__icontains=q)
+            )
+        else:
+            query = Q()
+        return query
+
+    def search(self, q, filters):
+        return self.published().filter(filters).filter(
+            self.search_query(q)
+        ).distinct()
 
 
 class Blog(models.Model):
@@ -83,6 +122,12 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ['-id']
+
+    def like(self):
+        if self.like_users:
+            return len(self.like_users)
+        else:
+            return 0
 
 
 class CommentManager(models.Manager):

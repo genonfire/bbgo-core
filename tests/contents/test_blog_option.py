@@ -1,5 +1,5 @@
-from utils.constants import Const
 from contents.tests import TestCase
+from utils.constants import Const
 
 
 class BlogOptionTest(TestCase):

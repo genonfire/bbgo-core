@@ -86,6 +86,8 @@ class _ConstProject(_Const):
     QUERY_PARAM_PINNED = 'pin'
     QUERY_PARAM_SORT_UP = 'up'
     QUERY_PARAM_SORT_DOWN = 'down'
+    QUERY_PARAM_CATEGORY = 'category'
+    QUERY_PARAM_TAG = 'tag'
 
     PERMISSION_LIST = [
         'permission_list',
