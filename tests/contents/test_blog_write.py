@@ -18,7 +18,7 @@ class BlogWritePermissionTest(TestCase):
         )
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -27,7 +27,7 @@ class BlogWritePermissionTest(TestCase):
         self.status(401)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -38,7 +38,7 @@ class BlogWritePermissionTest(TestCase):
 
         self.create_user(username='blogger@a.com')
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -59,7 +59,7 @@ class BlogWritePermissionTest(TestCase):
         )
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -68,7 +68,7 @@ class BlogWritePermissionTest(TestCase):
         self.status(401)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -79,7 +79,7 @@ class BlogWritePermissionTest(TestCase):
 
         self.create_user(username='blogger@a.com')
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -100,7 +100,7 @@ class BlogWritePermissionTest(TestCase):
         )
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -109,7 +109,7 @@ class BlogWritePermissionTest(TestCase):
         self.status(401)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -120,7 +120,7 @@ class BlogWritePermissionTest(TestCase):
 
         self.create_user(username='blogger@a.com')
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -141,7 +141,7 @@ class BlogWriteTest(TestCase):
         )
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': '',
@@ -151,7 +151,7 @@ class BlogWriteTest(TestCase):
         self.status(400)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': '',
                 'content': 'test',
@@ -161,7 +161,7 @@ class BlogWriteTest(TestCase):
         self.status(400)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
             },
@@ -170,7 +170,7 @@ class BlogWriteTest(TestCase):
         self.status(400)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'content': 'test',
             },
@@ -191,7 +191,7 @@ class BlogWriteTest(TestCase):
         )
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -201,7 +201,7 @@ class BlogWriteTest(TestCase):
         self.status(201)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -212,7 +212,7 @@ class BlogWriteTest(TestCase):
         self.status(201)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -223,7 +223,7 @@ class BlogWriteTest(TestCase):
         self.status(201)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -234,7 +234,7 @@ class BlogWriteTest(TestCase):
         self.status(400)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -254,7 +254,7 @@ class BlogWriteTest(TestCase):
         )
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -265,7 +265,7 @@ class BlogWriteTest(TestCase):
         self.status(400)
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'test',
@@ -303,7 +303,7 @@ class BlogWriteTest(TestCase):
         thumbnail_id = self.data.get('id')
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test',
                 'content': 'hi',
@@ -326,7 +326,7 @@ class BlogWriteTest(TestCase):
         self.check(self.data.get('is_published'))
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'test2',
                 'content': 'hello',

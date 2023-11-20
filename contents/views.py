@@ -52,3 +52,11 @@ class BlogReadViewSet(BlogViewSet):
 class BlogWriteViewSet(BlogViewSet):
     serializer_class = serializers.BlogSerializer
     content_permission = 'write'
+
+
+class BlogUpdateViewSet(BlogViewSet):
+    serializer_class = serializers.BlogSerializer
+    content_permission = 'write'
+
+    def get_queryset(self):
+        return self.model.objects.my(self.request.user)

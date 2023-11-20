@@ -50,7 +50,9 @@ class BlogOptionSerializer(ModelSerializer):
 
 class BlogSerializer(ModelSerializer):
     user = accounts.serializers.UsernameSerializer(required=False)
-    image = things_serializers.FileIdSerializer(required=False)
+    image = things_serializers.FileIdSerializer(
+        required=False, allow_null=True
+    )
 
     class Meta:
         model = models.Blog
@@ -98,7 +100,16 @@ class BlogSerializer(ModelSerializer):
             tags=validated_data.get('tags'),
             is_published=validated_data.get('is_published', True)
         )
+        return instance
 
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr == 'image':
+                setattr(instance, attr, get_object_from_dict(value))
+            else:
+                setattr(instance, attr, value)
+
+        instance.save()
         return instance
 
 

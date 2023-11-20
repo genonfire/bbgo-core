@@ -42,6 +42,9 @@ class BlogOption(models.Model):
 
 
 class BlogManager(models.Manager):
+    def my(self, user):
+        return self.filter(user=user)
+
     def published(self):
         return self.filter(is_published=True)
 

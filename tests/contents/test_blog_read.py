@@ -29,19 +29,19 @@ class BlogReadPermissionTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
         )
         self.status(401)
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(200)
 
         self.create_user(username='blogger@a.com')
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(403)
@@ -58,19 +58,19 @@ class BlogReadPermissionTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
         )
         self.status(401)
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(200)
 
         self.create_user(username='blogger@a.com')
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(200)
@@ -87,19 +87,19 @@ class BlogReadPermissionTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
         )
         self.status(200)
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(200)
 
         self.create_user(username='blogger@a.com')
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(200)
@@ -116,19 +116,19 @@ class BlogReadPermissionTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
         )
         self.status(401)
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(200)
 
         self.create_user(username='blogger@a.com')
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(403)
@@ -145,19 +145,19 @@ class BlogReadPermissionTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
         )
         self.status(401)
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(200)
 
         self.create_user(username='blogger@a.com')
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(200)
@@ -174,19 +174,19 @@ class BlogReadPermissionTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
         )
         self.status(200)
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(200)
 
         self.create_user(username='blogger@a.com')
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(200)
@@ -250,7 +250,7 @@ class BlogListTest(TestCase):
             blog_list.append(blog)
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
 
@@ -261,7 +261,7 @@ class BlogListTest(TestCase):
             self.check(self.data[index].get('tags'), blog.tags)
 
         self.get(
-            '/api/contents/blog/?category=lunch',
+            '/api/contents/blogs/?category=lunch',
             auth=True
         )
         self.status(200)
@@ -269,7 +269,7 @@ class BlogListTest(TestCase):
         self.check(self.data[0].get('title'), 'chili')
 
         self.get(
-            '/api/contents/blog/?tag=pepper',
+            '/api/contents/blogs/?tag=pepper',
             auth=True
         )
         self.status(200)
@@ -279,7 +279,7 @@ class BlogListTest(TestCase):
         self.check(self.data[2].get('title'), 'salt')
 
         self.get(
-            '/api/contents/blog/?tag=pepper&q=chili',
+            '/api/contents/blogs/?tag=pepper&q=chili',
             auth=True
         )
         self.status(200)
@@ -287,7 +287,7 @@ class BlogListTest(TestCase):
         self.check(self.data[0].get('title'), 'chili')
 
         self.get(
-            '/api/contents/blog/?category=lunch&tag=pepper&q=spic',
+            '/api/contents/blogs/?category=lunch&tag=pepper&q=spic',
             auth=True
         )
         self.status(200)
@@ -301,14 +301,14 @@ class BlogListTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/',
+            '/api/contents/blogs/',
             auth=True
         )
         self.status(200)
         self.check(len(self.data), 0)
 
         self.get(
-            '/api/contents/blog/?q=draft',
+            '/api/contents/blogs/?q=draft',
             auth=True
         )
         self.status(200)
@@ -320,7 +320,7 @@ class BlogListTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/?q=draft',
+            '/api/contents/blogs/?q=draft',
             auth=True
         )
         self.status(200)
@@ -349,13 +349,13 @@ class BlogReadTest(TestCase):
         self.create_blog(is_published=False)
 
         self.get(
-            '/api/contents/blog/%d/' % self.blog.id,
+            '/api/contents/blogs/%d/' % self.blog.id,
             auth=True
         )
         self.status(404)
 
         self.get(
-            '/api/contents/blog/%d/' % int(self.blog.id + 1),
+            '/api/contents/blogs/%d/' % int(self.blog.id + 1),
             auth=True
         )
         self.status(404)
@@ -372,7 +372,7 @@ class BlogReadTest(TestCase):
         thumbnail_id = self.data.get('id')
 
         self.post(
-            '/api/contents/blog/write/',
+            '/api/contents/blog/',
             {
                 'title': 'hungry',
                 'content': 'nyam',
@@ -387,7 +387,7 @@ class BlogReadTest(TestCase):
         )
 
         self.get(
-            '/api/contents/blog/%d/' % self.data.get('id'),
+            '/api/contents/blogs/%d/' % self.data.get('id'),
             auth=True
         )
         self.status(200)
