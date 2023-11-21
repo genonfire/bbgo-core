@@ -30,6 +30,11 @@ urlpatterns = [
     path(
         'blogs/<int:pk>/', views.BlogReadViewSet.as_view({
             'get': 'retrieve',
-        }), name='blog_read'
+        }), name='read_blog'
+    ),
+    path(
+        'blogs/<int:pk>/like/', views.BlogLikeViewSet.as_view({
+            'post': 'like',
+        }), name='like_blog'
     ),
 ]

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-12 09:53+0900\n"
+"POT-Creation-Date: 2023-11-21 11:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bbgo/settings.py:250
+#: bbgo/settings.py:251
 msgid "Korean"
 msgstr ""
 
-#: bbgo/settings.py:251
+#: bbgo/settings.py:252
 msgid "English"
 msgstr ""
 
@@ -194,4 +194,12 @@ msgstr ""
 
 #: utils/text.py:69
 msgid "Can't vote own reply."
+msgstr ""
+
+#: utils/text.py:71
+msgid "Can't like your blog."
+msgstr ""
+
+#: utils/text.py:72
+msgid "You liked already."
 msgstr ""

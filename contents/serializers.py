@@ -146,3 +146,12 @@ class BlogReadSerializer(BlogSerializer):
             'created_at',
             'modified_at',
         ]
+
+
+class BlogLikeSerializer(BlogSerializer):
+    class Meta:
+        model = models.Blog
+        fields = [
+            'id',
+            'like',
+        ]

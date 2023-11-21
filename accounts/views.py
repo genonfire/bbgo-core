@@ -23,6 +23,7 @@ from utils.email import EmailHelper
 from utils.excel import ExcelViewSet
 from utils.sms import SMSHelper
 from utils.text import Text
+from utils.netutils import get_ip_address, get_user_agent
 
 from . import (
     models,
@@ -49,8 +50,8 @@ class UserLoginView(GenericAPIView):
 
     def login(self, request, user):
         if settings.USE_LOGIN_DEVICE:
-            ip_address = tools.get_ip_address(request)
-            device, os, browser = tools.get_user_agent(request)
+            ip_address = get_ip_address(request)
+            device, os, browser = get_user_agent(request)
 
             login_device, _ = models.LoginDevice.objects.get_or_create(
                 user=user,
@@ -88,8 +89,8 @@ class UserLogoutView(APIView):
 
     def post(self, request, *args, **kwargs):
         if settings.USE_LOGIN_DEVICE:
-            ip_address = tools.get_ip_address(request)
-            device, os, browser = tools.get_user_agent(request)
+            ip_address = get_ip_address(request)
+            device, os, browser = get_user_agent(request)
 
             login_device = models.LoginDevice.objects.filter(
                 user=request.user,

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-12 09:53+0900\n"
+"POT-Creation-Date: 2023-11-21 11:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: bbgo/settings.py:250
+#: bbgo/settings.py:251
 msgid "Korean"
 msgstr "한국어"
 
-#: bbgo/settings.py:251
+#: bbgo/settings.py:252
 msgid "English"
 msgstr "영어"
 
@@ -194,8 +194,16 @@ msgstr "가입일"
 
 #: utils/text.py:68
 msgid "Can't vote own thread."
-msgstr "자신의 글에 추천할 수 없습니다."
+msgstr "자신의 글은 추천할 수 없습니다."
 
 #: utils/text.py:69
 msgid "Can't vote own reply."
-msgstr "자신의 글에 추천할 수 없습니다."
+msgstr "자신의 댓글은 추천할 수 없습니다."
+
+#: utils/text.py:71
+msgid "Can't like your blog."
+msgstr "자신의 글은 추천할 수 없습니다."
+
+#: utils/text.py:72
+msgid "You liked already."
+msgstr "이미 추천하셨습니다."

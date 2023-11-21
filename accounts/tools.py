@@ -1,7 +1,5 @@
 import random
 
-from user_agents import parse
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -11,6 +9,7 @@ from rest_framework.authtoken.models import Token
 from utils.constants import Const
 from utils.text import Text
 from utils.debug import Debug  # noqa
+from utils.netutils import get_ip_address, get_user_agent
 
 
 class _Test:
@@ -35,29 +34,6 @@ def get_call_name(first_name, last_name, language=None):
         call_name = '%s %s' % (first_name, last_name)
 
     return call_name
-
-
-def get_ip_address(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[-1].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-
-    return ip
-
-
-def get_user_agent(request):
-    ua_string = request.META.get('HTTP_USER_AGENT')
-    if ua_string:
-        user_agent = parse(request.META.get('HTTP_USER_AGENT'))
-        browser = user_agent.browser
-        os = user_agent.os
-        device = user_agent.is_pc and 'PC' or user_agent.device.family
-
-        return device, os.family, browser.family
-    else:
-        return 'Other', 'Other', 'Other'
 
 
 def is_same_device(request, login_device):

@@ -68,5 +68,8 @@ class _TextProject(_Text):
     ERROR_VOTE_OWN_THREAD = _("Can't vote own thread.")
     ERROR_VOTE_OWN_REPLY = _("Can't vote own reply.")
 
+    ERROR_LIKE_OWN_BLOG = _("Can't like your blog.")
+    ERROR_LIKED_ALREADY = _("You liked already.")
+
 
 Text = _TextProject()

@@ -1,3 +1,5 @@
+from rest_framework.serializers import ValidationError
+
 from core.viewsets import (
     ModelViewSet,
 )
@@ -5,11 +7,15 @@ from core.permissions import (
     ContentPermission,
     IsAdminOrReadOnly,
 )
+from core.response import Response
 from utils.debug import Debug  # noqa
+from utils.text import Text
+from utils.netutils import get_ip_address
 
 from . import (
     models,
     serializers,
+    tools,
 )
 
 
@@ -60,3 +66,24 @@ class BlogUpdateViewSet(BlogViewSet):
 
     def get_queryset(self):
         return self.model.objects.my(self.request.user)
+
+
+class BlogLikeViewSet(BlogViewSet):
+    serializer_class = serializers.BlogLikeSerializer
+    content_permission = 'vote'
+
+    def like(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user == request.user:
+            raise ValidationError({
+                'non_field_errors': [Text.ERROR_LIKE_OWN_BLOG]
+            })
+
+        ip_address = get_ip_address(request)
+        if not tools.like_blog(instance, ip_address):
+            raise ValidationError({
+                'non_field_errors': [Text.ERROR_LIKED_ALREADY]
+            })
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
