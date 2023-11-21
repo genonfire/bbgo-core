@@ -54,7 +54,6 @@ class BlogLikePermissionTest(TestCase):
             '/api/contents/blog_option/',
             {
                 'option': {
-                    'permission_write': Const.PERMISSION_MEMBER,
                     'permission_vote': Const.PERMISSION_MEMBER,
                 }
             },
@@ -73,7 +72,7 @@ class BlogLikePermissionTest(TestCase):
         )
         self.status(401)
 
-        self.create_user('member@a.com')
+        self.create_user('staff@a.com', is_staff=True)
         self.post(
             '/api/contents/blogs/%d/like/' % self.blog.id,
             auth=True
@@ -81,8 +80,8 @@ class BlogLikePermissionTest(TestCase):
         self.status(200)
 
         self.create_blog()
+        self.create_user('member@a.com')
 
-        self.create_user('staff@a.com', is_staff=True)
         self.post(
             '/api/contents/blogs/%d/like/' % self.blog.id,
             auth=True
