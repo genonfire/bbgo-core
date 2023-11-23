@@ -28,3 +28,28 @@ class TestCase(CoreTestCase):
         )
 
         return self.blog
+
+    def create_comment(
+        self,
+        blog=None,
+        comment_id=0,
+        user=None,
+        name=None,
+        content='Moo',
+        is_deleted=False,
+    ):
+        if not blog:
+            blog = self.blog
+        if not user and not name:
+            user = self.user
+
+        self.comment = models.Comment.objects.create(
+            blog=blog,
+            comment_id=comment_id,
+            user=user,
+            name=name,
+            content=content,
+            is_deleted=is_deleted
+        )
+
+        return self.comment

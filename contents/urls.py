@@ -37,4 +37,15 @@ urlpatterns = [
             'post': 'like',
         }), name='like_blog'
     ),
+    path(
+        'blogs/<int:pk>/comment/', views.CommentViewSet.as_view({
+            'post': 'create',
+        }), name='comment'
+    ),
+    path(
+        'comment/<int:pk>/', views.CommentUpdateViewSet.as_view({
+            'patch': 'partial_update',
+            'delete': 'delete',
+        }), name='edit_comment'
+    ),
 ]

@@ -6,8 +6,11 @@ from core.viewsets import (
 from core.permissions import (
     ContentPermission,
     IsAdminOrReadOnly,
+    IsApproved,
 )
 from core.response import Response
+from core.shortcuts import get_object_or_404
+from utils.constants import Const
 from utils.debug import Debug  # noqa
 from utils.text import Text
 from utils.netutils import get_ip_address
@@ -87,3 +90,30 @@ class BlogLikeViewSet(BlogViewSet):
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class CommentViewSet(ModelViewSet):
+    serializer_class = serializers.CommentSerializer
+    model = models.Comment
+
+    def get_permissions(self):
+        self.blog = get_object_or_404(
+            models.Blog,
+            pk=self.kwargs[Const.QUERY_PARAM_PK]
+        )
+        permission_classes = ContentPermission.reply(
+            models.BlogOption.objects.get()
+        )
+        return [permission() for permission in permission_classes]
+
+
+class CommentUpdateViewSet(ModelViewSet):
+    serializer_class = serializers.CommentUpdateSerializer
+    model = models.Comment
+    permission_classes = [IsApproved]
+
+    def get_queryset(self):
+        return self.model.objects.my(self.request.user)
+
+    def perform_delete(self, instance):
+        tools.delete_comment(instance)

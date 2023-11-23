@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from utils.constants import Const
+from utils.dateutils import date_or_time
 from utils.debug import Debug  # noqa
 
 
@@ -134,7 +135,8 @@ class Blog(models.Model):
 
 
 class CommentManager(models.Manager):
-    pass
+    def my(self, user):
+        return self.filter(user=user).filter(is_deleted=False)
 
 
 class Comment(models.Model):
@@ -167,3 +169,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-id']
+
+    def date_or_time(self):
+        return date_or_time(self.created_at)

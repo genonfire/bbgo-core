@@ -1,3 +1,4 @@
+from django.utils import timezone
 
 
 def like_blog(instance, ip_address):
@@ -10,3 +11,9 @@ def like_blog(instance, ip_address):
         instance.like_users.append(ip_address)
         instance.save(update_fields=['like_users'])
         return True
+
+
+def delete_comment(instance):
+    instance.is_deleted = True
+    instance.modified_at = timezone.now()
+    instance.save(update_fields=['is_deleted', 'modified_at'])

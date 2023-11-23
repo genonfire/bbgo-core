@@ -9,9 +9,8 @@ from django.utils import timezone
 
 from utils.constants import Const
 from utils.datautils import true_or_false
+from utils.dateutils import date_or_time
 from utils.debug import Debug  # noqa
-
-from . import tools
 
 
 class ForumManager(models.Manager):
@@ -179,7 +178,7 @@ class Thread(models.Model):
             return None
 
     def date_or_time(self):
-        return tools.date_or_time(self.created_at)
+        return date_or_time(self.created_at)
 
     def up(self):
         return self.up_users.count()
@@ -296,7 +295,7 @@ class Reply(models.Model):
             return None
 
     def date_or_time(self):
-        return tools.date_or_time(self.created_at)
+        return date_or_time(self.created_at)
 
     def up(self):
         return self.up_users.count()

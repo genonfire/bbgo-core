@@ -464,6 +464,7 @@ class ReplySerializer(ModelSerializer):
     def validate(self, attrs):
         if self.context.get('request').user.is_authenticated:
             attrs['user'] = self.context.get('request').user
+            attrs['name'] = None
         else:
             if not attrs.get('name'):
                 raise serializers.ValidationError(
