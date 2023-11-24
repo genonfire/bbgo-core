@@ -248,7 +248,7 @@ class BlogCommentTest(TestCase):
         )
         self.status(404)
 
-        self.create_user(username='staff@a.com')
+        self.create_user(username='staff@a.com', is_staff=True)
         self.patch(
             '/api/contents/comment/%d/' % self.comment.id,
             {
@@ -256,13 +256,13 @@ class BlogCommentTest(TestCase):
             },
             auth=True
         )
-        self.status(404)
+        self.status(200)
 
         self.delete(
             '/api/contents/comment/%d/' % self.comment.id,
             auth=True
         )
-        self.status(404)
+        self.status(200)
 
         self.create_comment(
             name='guest'
@@ -289,13 +289,13 @@ class BlogCommentTest(TestCase):
             },
             auth=True
         )
-        self.status(404)
+        self.status(200)
 
         self.delete(
             '/api/contents/comment/%d/' % self.comment.id,
             auth=True
         )
-        self.status(404)
+        self.status(200)
 
     def test_comment_edit_delete(self):
         self.patch(

@@ -136,7 +136,10 @@ class Blog(models.Model):
 
 class CommentManager(models.Manager):
     def my(self, user):
-        return self.filter(user=user).filter(is_deleted=False)
+        if user and user.is_staff:
+            return self.filter(is_deleted=False)
+        else:
+            return self.filter(user=user).filter(is_deleted=False)
 
 
 class Comment(models.Model):
