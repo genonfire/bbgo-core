@@ -255,3 +255,38 @@ class CommentUpdateSerializer(CommentSerializer):
         extra_kwargs = {
             'content': Const.REQUIRED,
         }
+
+
+class CommentListSerializer(CommentSerializer):
+    user = accounts.serializers.UsernameSerializer()
+    content = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Comment
+        fields = [
+            'id',
+            'comment_id',
+            'user',
+            'name',
+            'content',
+            'is_deleted',
+            'date_or_time',
+            'editable',
+        ]
+
+    def get_content(self, obj):
+        if obj.is_deleted:
+            return None
+        else:
+            return obj.content
+
+    def get_editable(self, obj):
+        user = self.context.get('request').user
+
+        if user.is_staff:
+            return True
+        elif not user.is_authenticated or not obj.user:
+            return False
+        else:
+            return bool(user.id == obj.user.id)

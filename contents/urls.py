@@ -48,4 +48,9 @@ urlpatterns = [
             'delete': 'delete',
         }), name='edit_comment'
     ),
+    path(
+        'blogs/<int:pk>/comments/', views.CommentListViewSet.as_view({
+            'get': 'list',
+        }), name='comments'
+    ),
 ]

@@ -1,7 +1,12 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models import Q
+from django.db.models import (
+    Case,
+    IntegerField,
+    Q,
+    When,
+)
 from django.utils import timezone
 
 from utils.constants import Const
@@ -140,6 +145,24 @@ class CommentManager(models.Manager):
             return self.filter(is_deleted=False)
         else:
             return self.filter(user=user).filter(is_deleted=False)
+
+    def blog(self, blog, user):
+        if isinstance(blog, Blog):
+            blog_comments = Q(blog=blog)
+        else:
+            blog_comments = Q(blog__id=blog)
+
+        if not user.is_staff:
+            blog_comments &= Q(is_deleted=False)
+
+        comments = self.filter(blog_comments).annotate(
+            custom_order=Case(
+                When(comment_id=0, then='id'),
+                default='comment_id',
+                output_field=IntegerField(),
+            )
+        ).order_by('custom_order', 'id')
+        return comments
 
 
 class Comment(models.Model):

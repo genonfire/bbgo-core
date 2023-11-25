@@ -95,15 +95,17 @@ class BlogLikeViewSet(BlogViewSet):
 class CommentViewSet(ModelViewSet):
     serializer_class = serializers.CommentSerializer
     model = models.Comment
+    content_permission = 'reply'
 
     def get_permissions(self):
         self.blog = get_object_or_404(
             models.Blog,
             pk=self.kwargs[Const.QUERY_PARAM_PK]
         )
-        permission_classes = ContentPermission.reply(
-            models.BlogOption.objects.get()
-        )
+        permission_classes = getattr(
+            ContentPermission,
+            self.content_permission,
+        )(models.BlogOption.objects.get())
         return [permission() for permission in permission_classes]
 
 
@@ -117,3 +119,12 @@ class CommentUpdateViewSet(ModelViewSet):
 
     def perform_delete(self, instance):
         tools.delete_comment(instance)
+
+
+class CommentListViewSet(CommentViewSet):
+    serializer_class = serializers.CommentListSerializer
+    model = models.Comment
+    content_permission = 'read'
+
+    def get_queryset(self):
+        return self.model.objects.blog(self.blog, self.request.user)
