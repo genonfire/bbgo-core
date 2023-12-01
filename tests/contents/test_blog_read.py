@@ -339,6 +339,7 @@ class BlogReadTest(TestCase):
                 ],
                 'option': {
                     'permission_list': Const.PERMISSION_STAFF,
+                    'permission_read': Const.PERMISSION_ALL,
                 }
             },
             auth=True
@@ -399,3 +400,18 @@ class BlogReadTest(TestCase):
         self.check(self.data.get('tags'), 'food, lunch, supper')
         self.check(self.data.get('like'), 0)
         self.check(self.data.get('is_published'))
+        self.check(self.data.get('editable'))
+
+        self.get(
+            '/api/contents/blogs/%d/' % self.data.get('id'),
+        )
+        self.status(200)
+        self.check_not(self.data.get('editable'))
+
+        self.create_user(username='member@a.com')
+        self.get(
+            '/api/contents/blogs/%d/' % self.data.get('id'),
+            auth=True
+        )
+        self.status(200)
+        self.check_not(self.data.get('editable'))

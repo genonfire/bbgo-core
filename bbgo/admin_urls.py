@@ -2,6 +2,7 @@ from django.urls import path
 
 from accounts import views as accounts_views
 from communities import views as communities_views
+from contents import views as contents_views
 
 
 urlpatterns = [
@@ -53,5 +54,17 @@ urlpatterns = [
         'replies/', communities_views.ReplyAdminViewSet.as_view({
             'get': 'list',
         }), name='replies'
+    ),
+    path(
+        'blogs/', contents_views.BlogAdminListViewSet.as_view({
+            'get': 'list',
+        }), name='blogs'
+    ),
+    path(
+        'blogs/<int:pk>/', contents_views.BlogAdminViewSet.as_view({
+            'get': 'retrieve',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        }), name='blog'
     ),
 ]

@@ -1,3 +1,4 @@
+from django.db.models import F, Func, IntegerField
 from rest_framework.serializers import ValidationError
 
 from core.viewsets import (
@@ -6,6 +7,7 @@ from core.viewsets import (
 from core.permissions import (
     ContentPermission,
     IsAdminOrReadOnly,
+    IsAdminUser,
     IsApproved,
 )
 from core.response import Response
@@ -128,3 +130,43 @@ class CommentListViewSet(CommentViewSet):
 
     def get_queryset(self):
         return self.model.objects.blog(self.blog, self.request.user)
+
+
+class _BlogAdminViewSet(ModelViewSet):
+    serializer_class = serializers.BlogSerializer
+    model = models.Blog
+    permission_classes = [IsAdminUser]
+
+    def get_order(self):
+        sort = self.request.query_params.get(Const.QUERY_PARAM_SORT)
+
+        if sort == 'like':
+            ordering = '-like'
+        elif sort == Const.QUERY_PARAM_SORT_EARLIEST:
+            ordering = 'id'
+        else:
+            ordering = '-id'
+
+        return ordering
+
+    def get_filters(self):
+        return self.model.objects.admin_query(self.request.query_params)
+
+    def get_queryset(self):
+        return self.model.objects.admin_search(
+            self.q, self.get_filters()
+        ).annotate(
+            like=Func(
+                F('like_users'),
+                function='cardinality',
+                output_field=IntegerField()
+            )
+        ).order_by(self.get_order())
+
+
+class BlogAdminListViewSet(_BlogAdminViewSet):
+    serializer_class = serializers.BlogListSerializer
+
+
+class BlogAdminViewSet(_BlogAdminViewSet):
+    pass

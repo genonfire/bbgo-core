@@ -53,6 +53,7 @@ class BlogSerializer(ModelSerializer):
     image = things_serializers.FileIdSerializer(
         required=False, allow_null=True
     )
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Blog
@@ -67,11 +68,13 @@ class BlogSerializer(ModelSerializer):
             'is_published',
             'created_at',
             'modified_at',
+            'editable',
         ]
         read_only_fields = [
             'user',
             'created_at',
             'modified_at',
+            'editable',
         ]
         extra_kwargs = {
             'title': Const.REQUIRED,
@@ -112,6 +115,16 @@ class BlogSerializer(ModelSerializer):
         instance.save()
         return instance
 
+    def get_editable(self, obj):
+        user = self.context.get('request').user
+
+        if user.is_staff:
+            return True
+        elif not user.is_authenticated or not obj.user:
+            return False
+        else:
+            return bool(user.id == obj.user.id)
+
 
 class BlogListSerializer(BlogSerializer):
     class Meta:
@@ -145,6 +158,7 @@ class BlogReadSerializer(BlogSerializer):
             'is_published',
             'created_at',
             'modified_at',
+            'editable',
         ]
 
 
@@ -170,6 +184,7 @@ class BlogCommentSerializer(BlogSerializer):
 class CommentSerializer(ModelSerializer):
     blog = BlogCommentSerializer(required=False)
     user = accounts.serializers.UsernameSerializer(required=False)
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Comment
@@ -182,12 +197,14 @@ class CommentSerializer(ModelSerializer):
             'content',
             'is_deleted',
             'date_or_time',
+            'editable',
         ]
         read_only_fields = [
             'blog',
             'user',
             'is_deleted',
             'date_or_time',
+            'editable',
         ]
         extra_kwargs = {
             'content': Const.REQUIRED,
@@ -232,6 +249,16 @@ class CommentSerializer(ModelSerializer):
         )
         return instance
 
+    def get_editable(self, obj):
+        user = self.context.get('request').user
+
+        if user.is_staff:
+            return True
+        elif not user.is_authenticated or not obj.user:
+            return False
+        else:
+            return bool(user.id == obj.user.id)
+
 
 class CommentUpdateSerializer(CommentSerializer):
     class Meta:
@@ -244,6 +271,7 @@ class CommentUpdateSerializer(CommentSerializer):
             'content',
             'is_deleted',
             'date_or_time',
+            'editable',
         ]
         read_only_fields = [
             'comment_id',
@@ -251,6 +279,7 @@ class CommentUpdateSerializer(CommentSerializer):
             'name',
             'is_deleted',
             'date_or_time',
+            'editable',
         ]
         extra_kwargs = {
             'content': Const.REQUIRED,
@@ -260,7 +289,6 @@ class CommentUpdateSerializer(CommentSerializer):
 class CommentListSerializer(CommentSerializer):
     user = accounts.serializers.UsernameSerializer()
     content = serializers.SerializerMethodField()
-    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Comment
@@ -280,13 +308,3 @@ class CommentListSerializer(CommentSerializer):
             return None
         else:
             return obj.content
-
-    def get_editable(self, obj):
-        user = self.context.get('request').user
-
-        if user.is_staff:
-            return True
-        elif not user.is_authenticated or not obj.user:
-            return False
-        else:
-            return bool(user.id == obj.user.id)

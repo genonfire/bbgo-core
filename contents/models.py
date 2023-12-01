@@ -10,6 +10,7 @@ from django.db.models import (
 from django.utils import timezone
 
 from utils.constants import Const
+from utils.datautils import true_or_false
 from utils.dateutils import date_or_time
 from utils.debug import Debug  # noqa
 
@@ -36,6 +37,7 @@ class BlogOption(models.Model):
             blank=True,
             null=True,
         ),
+        default=list,
         blank=True,
         null=True,
     )
@@ -75,12 +77,25 @@ class BlogManager(models.Manager):
             )
         else:
             query = Q()
+
         return query
 
     def search(self, q, filters):
         return self.published().filter(filters).filter(
             self.search_query(q)
         ).distinct()
+
+    def admin_query(self, q):
+        query = self.query_category(q)
+        draft = true_or_false(q.get(Const.QUERY_PARAM_DRAFT))
+
+        if draft:
+            query &= ~Q(is_published=draft)
+
+        return query
+
+    def admin_search(self, q, filters):
+        return self.filter(filters).filter(self.search_query(q)).distinct()
 
 
 class Blog(models.Model):
@@ -120,6 +135,7 @@ class Blog(models.Model):
             blank=True,
             null=True,
         ),
+        default=list,
         blank=True,
         null=True,
     )

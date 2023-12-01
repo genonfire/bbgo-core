@@ -256,6 +256,7 @@ class BlogCommentTest(TestCase):
         self.check(self.data.get('content'), 'hi')
         self.check_not(self.data.get('is_deleted'))
         self.check_not(self.data.get('date_or_time').get('date'))
+        self.check_not(self.data.get('editable'))
 
         self.post(
             '/api/contents/blogs/%d/comment/' % self.blog.id,
@@ -271,6 +272,7 @@ class BlogCommentTest(TestCase):
         self.check_not(self.data.get('name'))
         self.check(self.data.get('content'), 'hello')
         self.check_not(self.data.get('is_deleted'))
+        self.check(self.data.get('editable'))
 
     def test_comment_update_permission(self):
         self.patch(
@@ -366,6 +368,7 @@ class BlogCommentTest(TestCase):
         self.check(self.data.get('content'), 'bye')
         self.check_not(self.data.get('is_deleted'))
         self.check_not(self.data.get('date_or_time').get('date'))
+        self.check(self.data.get('editable'))
 
         self.post(
             '/api/contents/blogs/%d/comment/' % self.blog.id,
@@ -390,6 +393,7 @@ class BlogCommentTest(TestCase):
         self.check_not(self.data.get('name'))
         self.check(self.data.get('content'), 'bye')
         self.check_not(self.data.get('is_deleted'))
+        self.check(self.data.get('editable'))
 
         self.delete(
             '/api/contents/comment/%d/' % self.comment.id,
