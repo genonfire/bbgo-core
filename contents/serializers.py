@@ -308,3 +308,18 @@ class CommentListSerializer(CommentSerializer):
             return None
         else:
             return obj.content
+
+
+class CommentAdminSerializer(CommentSerializer):
+    class Meta:
+        model = models.Comment
+        fields = [
+            'id',
+            'blog',
+            'user',
+            'name',
+            'content',
+            'is_deleted',
+            'created_at',
+            'modified_at',
+        ]

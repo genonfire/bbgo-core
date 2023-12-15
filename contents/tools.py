@@ -13,7 +13,21 @@ def like_blog(instance, ip_address):
         return True
 
 
+def update_blog(instance):
+    instance.modified_at = timezone.now()
+
+
+def update_comment(instance):
+    instance.modified_at = timezone.now()
+
+
 def delete_comment(instance):
     instance.is_deleted = True
+    instance.modified_at = timezone.now()
+    instance.save(update_fields=['is_deleted', 'modified_at'])
+
+
+def restore_thread(instance):
+    instance.is_deleted = False
     instance.modified_at = timezone.now()
     instance.save(update_fields=['is_deleted', 'modified_at'])

@@ -67,4 +67,21 @@ urlpatterns = [
             'delete': 'destroy'
         }), name='blog'
     ),
+    path(
+        'comments/', contents_views.CommentAdminViewSet.as_view({
+            'get': 'list',
+        }), name='comments'
+    ),
+    path(
+        'comments/<int:pk>/',
+        contents_views.CommentAdminDeleteViewSet.as_view({
+            'delete': 'delete'
+        }), name='delete_comment'
+    ),
+    path(
+        'comments/restore/<int:pk>/',
+        contents_views.CommentAdminRestoreViewSet.as_view({
+            'post': 'restore'
+        }), name='restore_comment'
+    ),
 ]

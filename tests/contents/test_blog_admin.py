@@ -242,3 +242,159 @@ class BlogAdminListTest(TestCase):
         self.status(200)
         self.check(len(self.data), 1)
         self.check(self.data[0].get('id'), blog_list[2].id)
+
+
+class CommentAdminPermissionTest(TestCase):
+    def setUp(self):
+        self.create_user(is_staff=True)
+
+        self.patch(
+            '/api/contents/blog_option/',
+            {
+                'category': [
+                    'hobby',
+                    'asmr'
+                ]
+            },
+            auth=True
+        )
+        self.create_blog()
+        self.deleted_comment = self.create_comment(is_deleted=True)
+        self.create_comment()
+
+    def test_comment_permission_admin(self):
+        self.get(
+            '/api/admin/comments/'
+        )
+        self.status(401)
+
+        self.delete(
+            '/api/admin/comments/%d/' % self.comment.id
+        )
+        self.status(401)
+
+        self.post(
+            '/api/admin/comments/%d/' % self.deleted_comment.id
+        )
+        self.status(401)
+
+        self.get(
+            '/api/admin/comments/',
+            auth=True
+        )
+        self.status(200)
+
+        self.delete(
+            '/api/admin/comments/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.post(
+            '/api/admin/comments/restore/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.create_user(username='member@a.com')
+
+        self.get(
+            '/api/admin/comments/',
+            auth=True
+        )
+        self.status(403)
+
+        self.delete(
+            '/api/admin/comments/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(403)
+
+        self.post(
+            '/api/admin/comments/restore/%d/' % self.deleted_comment.id,
+            auth=True
+        )
+        self.status(403)
+
+
+class CommentAdminTest(TestCase):
+    def setUp(self):
+        self.create_user(is_staff=True)
+
+        self.patch(
+            '/api/contents/blog_option/',
+            {
+                'category': [
+                    'hobby',
+                    'asmr'
+                ]
+            },
+            auth=True
+        )
+
+    def test_comment_admin_check_result(self):
+        self.create_blog()
+        self.create_comment()
+
+        self.delete(
+            '/api/admin/comments/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.delete(
+            '/api/admin/comments/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(404)
+
+        self.post(
+            '/api/admin/comments/restore/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.delete(
+            '/api/admin/comments/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(200)
+
+    def test_comment_admin_list(self):
+        self.create_blog(content='trust')
+        comment1 = self.create_comment(
+            content='fall',
+            is_deleted=True
+        )
+        self.create_comment(
+            comment_id=self.comment.id,
+            content='trust'
+        )
+        self.create_blog(content='fall')
+        comment3 = self.create_comment(content='fall')
+
+        self.get(
+            '/api/admin/comments/',
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data), 3)
+        self.check(self.data[0].get('content'), 'fall')
+        self.check(self.data[1].get('content'), 'trust')
+        self.check(self.data[2].get('content'), 'fall')
+
+        self.get(
+            '/api/admin/comments/?delete=true',
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data), 1)
+        self.check(self.data[0].get('id'), comment1.id)
+
+        self.get(
+            '/api/admin/comments/?delete=false&q=fall',
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data), 1)
+        self.check(self.data[0].get('id'), comment3.id)

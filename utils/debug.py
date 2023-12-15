@@ -8,7 +8,6 @@ logger = logging.getLogger('bbgo.trace')
 
 
 class _Debug:
-
     def debug_mode(self):
         return settings.DEBUG
 

@@ -162,6 +162,12 @@ class CommentManager(models.Manager):
         else:
             return self.filter(user=user).filter(is_deleted=False)
 
+    def active(self):
+        return self.filter(is_deleted=False)
+
+    def deleted(self):
+        return self.filter(is_deleted=True)
+
     def blog(self, blog, user):
         if isinstance(blog, Blog):
             blog_comments = Q(blog=blog)
@@ -179,6 +185,27 @@ class CommentManager(models.Manager):
             )
         ).order_by('custom_order', 'id')
         return comments
+
+    def admin_query(self, q):
+        query = Q()
+        deleted = true_or_false(q.get(Const.QUERY_PARAM_DELETED))
+        if deleted:
+            query = Q(is_deleted=deleted)
+        return query
+
+    def search_query(self, q):
+        if q:
+            query = (
+                Q(content__icontains=q) |
+                (Q(user__isnull=True) & Q(name__icontains=q)) |
+                Q(user__call_name__icontains=q)
+            )
+        else:
+            query = Q()
+        return query
+
+    def admin_search(self, q, filters):
+        return self.filter(filters).filter(self.search_query(q)).distinct()
 
 
 class Comment(models.Model):

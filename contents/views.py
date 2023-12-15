@@ -72,6 +72,9 @@ class BlogUpdateViewSet(BlogViewSet):
     def get_queryset(self):
         return self.model.objects.my(self.request.user)
 
+    def sync_update(self, instance, partial):
+        tools.update_blog(instance)
+
 
 class BlogLikeViewSet(BlogViewSet):
     serializer_class = serializers.BlogLikeSerializer
@@ -118,6 +121,9 @@ class CommentUpdateViewSet(ModelViewSet):
 
     def get_queryset(self):
         return self.model.objects.my(self.request.user)
+
+    def sync_update(self, instance, partial):
+        tools.update_comment(instance)
 
     def perform_delete(self, instance):
         tools.delete_comment(instance)
@@ -169,4 +175,38 @@ class BlogAdminListViewSet(_BlogAdminViewSet):
 
 
 class BlogAdminViewSet(_BlogAdminViewSet):
-    pass
+    def sync_update(self, instance, partial):
+        tools.update_blog(instance)
+
+
+class CommentAdminViewSet(ModelViewSet):
+    serializer_class = serializers.CommentAdminSerializer
+    model = models.Comment
+    permission_classes = [IsAdminUser]
+
+    def get_filters(self):
+        return self.model.objects.admin_query(self.request.query_params)
+
+    def get_queryset(self):
+        return self.model.objects.admin_search(
+            self.q,
+            self.get_filters()
+        ).order_by(self.get_order())
+
+
+class CommentAdminDeleteViewSet(CommentAdminViewSet):
+    def get_queryset(self):
+        return self.model.objects.active()
+
+    def perform_delete(self, instance):
+        tools.delete_comment(instance)
+
+
+class CommentAdminRestoreViewSet(CommentAdminViewSet):
+    def get_queryset(self):
+        return self.model.objects.deleted()
+
+    def restore(self, request, *args, **kwargs):
+        instance = self.get_object()
+        tools.restore_thread(instance)
+        return Response()
