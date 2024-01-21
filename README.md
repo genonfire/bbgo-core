@@ -1,7 +1,7 @@
 # bbgo-core
 [![API](https://github.com/genonfire/bbgo-core/actions/workflows/backend.yml/badge.svg?branch=master)](https://github.com/genonfire/bbgo-core/actions/workflows/backend.yml)
 [![CodeQL](https://github.com/genonfire/bbgo-core/actions/workflows/codeql.yml/badge.svg)](https://github.com/genonfire/bbgo-core/actions/workflows/codeql.yml)
-[![codecov](https://codecov.io/gh/genonfire/bbgo-core/branch/master/graph/badge.svg)](https://codecov.io/gh/genonfire/bbgo-core)
+[![codecov](https://codecov.io/gh/genonfire/bbgo-core/graph/badge.svg?token=JLH19AP5LD)](https://codecov.io/gh/genonfire/bbgo-core)
 
 Total bbs system made by django
 
