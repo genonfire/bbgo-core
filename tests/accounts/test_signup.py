@@ -1,11 +1,8 @@
-from rest_framework.test import APIClient
-
 from accounts.tests import TestCase
 
 
 class SignupTest(TestCase):
     def setUp(self):
-        self.client = APIClient(enforce_csrf_checks=True)
         self.username = 'bb@bbgo-test.com'
         self.password = 'password'
         self.first_name = 'B'

@@ -2,15 +2,12 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from rest_framework.test import APIClient
-
 from accounts import models
 from accounts.tests import TestCase
 
 
 class PasswordTest(TestCase):
     def setUp(self):
-        self.client = APIClient(enforce_csrf_checks=True)
         self.username = 'p.king@a.com'
         self.password = 'password'
         self.first_name = 'Password'
