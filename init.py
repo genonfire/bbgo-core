@@ -13,14 +13,17 @@ REPLACE_DIRS = [
     'utils',
     'bbgo',
     'tests',
+    'nginx',
 ]
 REPLACE_FILES = [
     '.coveragerc',
     'manage.py',
-    'README.md',
     'tox.ini',
     'restore.sh',
     'load_fixtures.sh',
+    'docker-compose.yml',
+    'Dockerfile',
+    'uwsgi.ini',
 ]
 IGNORE_FILES = [
     '.pyc',

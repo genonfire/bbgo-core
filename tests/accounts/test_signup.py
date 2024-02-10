@@ -3,7 +3,7 @@ from accounts.tests import TestCase
 
 class SignupTest(TestCase):
     def setUp(self):
-        self.username = 'bb@bbgo-test.com'
+        self.username = 'bb@a.com'
         self.password = 'password'
         self.first_name = 'B'
         self.last_name = 'B'
