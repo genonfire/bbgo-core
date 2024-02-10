@@ -6,6 +6,7 @@ config.json
 coverage.xml
 pyrightconfig.json
 
+/log/
 /frontend/bbgo
 /frontend/upload/
 /.tox/

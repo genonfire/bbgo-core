@@ -25,7 +25,7 @@ bbgo-ui: https://github.com/genonfire/bbgo-ui
 
 
 # Docker
-    TBD
+    $ docker-compose up -d --build
 
 
 # unittest

@@ -6,6 +6,7 @@ unittest=false
 flake8=false
 testcase=false
 clean=false
+docker=false
 
 if [ $# -eq 0 ]; then
     flake8=true
@@ -41,6 +42,11 @@ if [ "$flake8" = true ]; then
     if flake8 --jobs=auto; then
         echo -e "OK\n"
     else
+        exit
+    fi
+fi
+if [ "$docker" = true ]; then
+    if ! docker-compose --dry-run up -d --build; then
         exit
     fi
 fi

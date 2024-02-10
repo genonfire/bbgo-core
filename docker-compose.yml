@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - bbgo:/bbgo
+      - ./log:/var/log/nginx
+    depends_on:
+      - uwsgi
+
+  uwsgi:
+    container_name: uwsgi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: uwsgi --ini uwsgi.ini
+    volumes:
+      - bbgo:/bbgo
+      - ./log:/var/log/uwsgi
+
+volumes:
+  bbgo:
