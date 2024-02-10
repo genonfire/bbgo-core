@@ -15,10 +15,8 @@ class I18NTest(TestCase):
             }
         )
         self.status(response, 400)
-        self.check(
-            'Unable to login.',
-            response.data.get('non_field_errors')[0]
-        )
+        self.check(self.error.get('code'), 'UNABLE_TO_LOGIN')
+        self.check(self.error.get('message'), 'Unable to login.')
 
     def test_i18n_default_no_prefix(self):
         response = self.post(
@@ -29,7 +27,5 @@ class I18NTest(TestCase):
             }
         )
         self.status(response, 400)
-        self.check(
-            Text.UNABLE_TO_LOGIN,
-            response.data.get('non_field_errors')[0]
-        )
+        self.check(self.error.get('code'), 'UNABLE_TO_LOGIN')
+        self.check(self.error.get('message'), Text.UNABLE_TO_LOGIN)

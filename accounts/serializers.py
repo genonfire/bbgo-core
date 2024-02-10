@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_decode
 
 from rest_framework import serializers
 
+from core.error import Error
 from core.serializers import (
     ModelSerializer,
     Serializer
@@ -77,7 +78,7 @@ class LoginSerializer(Serializer):
         )
 
         if not user:
-            raise serializers.ValidationError(Text.UNABLE_TO_LOGIN)
+            Error.unable_to_login()
 
         attrs['user'] = user
         return attrs
@@ -118,9 +119,10 @@ class PasswordChangeSerializer(_PasswordChangeSerializer):
 
     def validate(self, attrs):
         if not self.user.check_password(attrs.get('old_password')):
-            raise serializers.ValidationError(Text.INVALID_PASSWORD)
+            Error.invalid_password()
+
         if attrs.get('old_password') == attrs.get('new_password'):
-            raise serializers.ValidationError(Text.SAME_AS_OLD_PASSWORD)
+            Error.same_password()
 
         password_validation.validate_password(
             attrs.get('new_password'), self.user)
@@ -138,12 +140,12 @@ class PasswordResetConfirmSerializer(_PasswordChangeSerializer):
             uid = urlsafe_base64_decode(attrs.get('uid')).decode()
             self.user = models.User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError):
-            raise serializers.ValidationError(Text.INVALID_UID)
+            Error.invalid_uid()
 
         if not default_token_generator.check_token(
             self.user, attrs.get('token')
         ):
-            raise serializers.ValidationError(Text.INVALID_TOKEN)
+            Error.invalid_token()
 
         return attrs
 
@@ -160,9 +162,7 @@ class PasswordResetSerializer(Serializer):
             not self.password_reset_form.is_valid() or
             not models.User.objects.filter(username__iexact=email).exists()
         ):
-            raise serializers.ValidationError(
-                {'email': [Text.USER_NOT_EXIST]}
-            )
+            Error.user_not_exist()
 
         self.language = Text.language()
         return attrs
@@ -199,11 +199,11 @@ class DeactivateAccountSerializer(Serializer):
 
     def validate(self, attrs):
         if not self.context.get('request').user.is_active:
-            raise serializers.ValidationError(Text.USER_IS_DEACTIVATED)
+            Error.user_deactivated()
+
         if not attrs.get('consent'):
-            raise serializers.ValidationError(
-                {'consent': [Text.YOU_MUST_CONSENT]}
-            )
+            Error.you_must_consent('consent')
+
         return attrs
 
 

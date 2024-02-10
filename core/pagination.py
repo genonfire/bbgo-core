@@ -8,12 +8,11 @@ from rest_framework.pagination import (
     PageNumberPagination as _BasePagination
 )
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 from rest_framework.utils.urls import remove_query_param
 
+from core.error import Error
 from utils.debug import Debug  # noqa
 from utils.regexp import RegExpHelper
-from utils.text import Text
 
 
 class PrevNextPagination(_BasePagination):
@@ -67,9 +66,7 @@ class PrevNextPagination(_BasePagination):
             not isinstance(page_number, int) and
             not RegExpHelper.is_numbers(page_number)
         ):
-            raise ValidationError({
-                'page': [Text.INVALID_VALUE]
-            })
+            raise Error.invalid_page()
 
         self.current_page = int(page_number)
 

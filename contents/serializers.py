@@ -2,6 +2,7 @@ import accounts
 
 from rest_framework import serializers
 
+from core.error import Error
 from core.serializers import (
     ModelSerializer,
 )
@@ -9,7 +10,6 @@ from core.shortcuts import get_object_or_404
 from utils.constants import Const
 from utils.datautils import get_object_from_dict
 from utils.debug import Debug  # noqa
-from utils.text import Text
 from things import serializers as things_serializers
 
 from . import models
@@ -34,9 +34,7 @@ class BlogOptionSerializer(ModelSerializer):
 
                 if attr in Const.PERMISSION_LIST:
                     if not option[attr] in Const.PERMISSION_TYPE:
-                        raise serializers.ValidationError({
-                            attr: [Text.INVALID_PERMISSION_TYPE]
-                        })
+                        Error.invalid_permission_type(attr)
 
                 if (
                     attr == 'permission_write' and
@@ -87,9 +85,7 @@ class BlogSerializer(ModelSerializer):
 
         if category:
             if not option.category or category not in option.category:
-                raise serializers.ValidationError({
-                        'category': [Text.INVALID_VALUE]
-                    })
+                Error.invalid_category()
 
         return attrs
 
@@ -216,9 +212,7 @@ class CommentSerializer(ModelSerializer):
             attrs['name'] = None
         else:
             if not attrs.get('name'):
-                raise serializers.ValidationError(
-                    {'name': [Text.REQUIRED_FIELD]}
-                )
+                Error.required_field('name')
 
         if attrs.get('comment_id'):
             comment_id = attrs.get('comment_id')

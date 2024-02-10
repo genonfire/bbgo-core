@@ -1,11 +1,11 @@
 from django.conf import settings
 from rest_framework import serializers
 
+from core.error import Error
 from core.serializers import (
     ModelSerializer,
 )
 from utils.debug import Debug  # noqa
-from utils.text import Text
 
 from . import (
     models,
@@ -46,9 +46,7 @@ class FileUploadSerializer(FileSerializer):
 
     def validate(self, attrs):
         if attrs.get('file').size > settings.UPLOAD_MAX_SIZE:
-            raise serializers.ValidationError(
-                {'file': [Text.FILE_TOO_LARGE]}
-            )
+            Error.file_too_large()
 
         return attrs
 

@@ -1,8 +1,7 @@
 from django.db.models import Count
 from django.utils import timezone
 
-from rest_framework.serializers import ValidationError
-
+from core.error import Error
 from core.viewsets import (
     ModelViewSet,
     ReadOnlyModelViewSet,
@@ -16,7 +15,6 @@ from core.response import Response
 from core.shortcuts import get_object_or_404
 from utils.constants import Const
 from utils.debug import Debug  # noqa
-from utils.text import Text
 
 from . import (
     models,
@@ -162,9 +160,7 @@ class ThreadVoteViewSet(ThreadToggleViewSet):
     def up(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.user == request.user:
-            raise ValidationError({
-                'non_field_errors': [Text.ERROR_VOTE_OWN_THREAD]
-            })
+            Error.vote_own_thread()
 
         tools.up_thread(instance, request.user)
         serializer = self.get_serializer(instance)
@@ -173,9 +169,7 @@ class ThreadVoteViewSet(ThreadToggleViewSet):
     def down(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.user == request.user:
-            raise ValidationError({
-                'non_field_errors': [Text.ERROR_VOTE_OWN_THREAD]
-            })
+            Error.vote_own_thread()
 
         tools.down_thread(instance, request.user)
         serializer = self.get_serializer(instance)
@@ -321,9 +315,7 @@ class ReplyVoteViewSet(ReplyViewSet):
     def up(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.user == request.user:
-            raise ValidationError({
-                'non_field_errors': [Text.ERROR_VOTE_OWN_REPLY]
-            })
+            Error.vote_own_reply()
 
         tools.up_reply(instance, request.user)
         serializer = self.get_serializer(instance)
@@ -332,9 +324,7 @@ class ReplyVoteViewSet(ReplyViewSet):
     def down(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.user == request.user:
-            raise ValidationError({
-                'non_field_errors': [Text.ERROR_VOTE_OWN_REPLY]
-            })
+            Error.vote_own_reply()
 
         tools.down_reply(instance, request.user)
         serializer = self.get_serializer(instance)

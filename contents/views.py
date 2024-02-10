@@ -1,6 +1,6 @@
 from django.db.models import F, Func, IntegerField
-from rest_framework.serializers import ValidationError
 
+from core.error import Error
 from core.viewsets import (
     ModelViewSet,
 )
@@ -14,7 +14,6 @@ from core.response import Response
 from core.shortcuts import get_object_or_404
 from utils.constants import Const
 from utils.debug import Debug  # noqa
-from utils.text import Text
 from utils.netutils import get_ip_address
 
 from . import (
@@ -83,15 +82,11 @@ class BlogLikeViewSet(BlogViewSet):
     def like(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.user == request.user:
-            raise ValidationError({
-                'non_field_errors': [Text.ERROR_LIKE_OWN_BLOG]
-            })
+            Error.like_own_blog()
 
         ip_address = get_ip_address(request)
         if not tools.like_blog(instance, ip_address):
-            raise ValidationError({
-                'non_field_errors': [Text.ERROR_LIKED_ALREADY]
-            })
+            Error.already_liked()
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)

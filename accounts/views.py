@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.utils import timezone
 
-from rest_framework.serializers import ValidationError
-
+from core.error import Error
 from core.viewsets import (
     APIView,
     CreateAPIView,
@@ -336,14 +335,10 @@ class AuthCodeAnswerViewSet(AuthCodeViewSet):
         code = request.data.get('code')
 
         if instance.is_used:
-            raise ValidationError({
-                'non_field_errors': [Text.USED_AUTH_CODE]
-            })
+            Error.used_auth_code()
 
         if now > instance.expired_at():
-            raise ValidationError({
-                'non_field_errors': [Text.EXPIRED_AUTH_CODE]
-            })
+            Error.expired_auth_code()
 
         if code != instance.code:
             instance.wrong_input = code
@@ -351,9 +346,7 @@ class AuthCodeAnswerViewSet(AuthCodeViewSet):
             instance.used_at = now
             instance.save()
 
-            raise ValidationError({
-                'non_field_errors': [Text.INVALID_AUTH_CODE]
-            })
+            Error.invalid_auth_code()
 
         instance.is_used = True
         instance.used_at = now

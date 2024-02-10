@@ -2,23 +2,22 @@ from django.utils.log import AdminEmailHandler
 from django.core import mail
 
 from rest_framework.views import exception_handler
-from rest_framework.exceptions import ErrorDetail
 
 from core.wrapper import async_func
-from utils.text import Text
 
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
-    if response:
-        if response.data.get('username'):
-            error = response.data.get('username')[0]
-            if error and error.code == 'unique':
-                response.data = {
-                    'username': [
-                        ErrorDetail(Text.USERNAME_EXISTS, 'unique')
-                    ]
+    if response and response.status_code == 400:
+        if response.data and not response.data.get('error'):
+            data = {
+                'error': {
+                    'code': 'DRF_FIELD_ERROR',
+                    'message': '',
+                    'field': response.data
                 }
+            }
+            response.data = data
 
     return response
 

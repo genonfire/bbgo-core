@@ -116,7 +116,10 @@ class TestCase(APITestCase):
             response = self.client.post(path, data, format, **extra)
 
         self.response = response
-        if hasattr(response, 'data'):
+
+        if response.status_code == Response.HTTP_400:
+            self.error = response.data.get('error')
+        elif hasattr(response, 'data'):
             self.data = response.data.get('data')
         return response
 

@@ -3,6 +3,7 @@ import accounts
 
 from rest_framework import serializers
 
+from core.error import Error
 from core.serializers import (
     ModelSerializer,
 )
@@ -10,7 +11,6 @@ from core.shortcuts import get_object_or_404
 
 from utils.constants import Const
 from utils.debug import Debug  # noqa
-from utils.text import Text
 
 from things import serializers as things_serializers
 
@@ -40,9 +40,7 @@ class ForumSerializer(ModelSerializer):
         if attrs.get('name'):
             pattern = re.compile('[A-Za-z0-9]+')
             if not pattern.fullmatch(attrs.get('name')):
-                raise serializers.ValidationError({
-                    'name': [Text.ALPHABETS_NUMBER_ONLY]
-                })
+                Error.alpha_number_only('name')
 
         return attrs
 
@@ -54,9 +52,7 @@ class ForumSerializer(ModelSerializer):
 
             if attr in Const.PERMISSION_LIST:
                 if not option[attr] in Const.PERMISSION_TYPE:
-                    raise serializers.ValidationError({
-                        attr: [Text.INVALID_PERMISSION_TYPE]
-                    })
+                    Error.invalid_permission_type(attr)
 
             if (
                 attr == 'permission_vote' and
@@ -225,9 +221,7 @@ class ThreadSerializer(ModelSerializer):
             attrs['user'] = self.context.get('request').user
         else:
             if not attrs.get('name'):
-                raise serializers.ValidationError(
-                    {'name': [Text.REQUIRED_FIELD]}
-                )
+                Error.required_field('name')
 
         return attrs
 
@@ -341,14 +335,11 @@ class ThreadFileSerializer(ThreadSerializer):
 
     def validate(self, attrs):
         if self.context.get('view').action == 'delete_files':
-
             for attr in attrs.get('files'):
                 attachment = attr.get('id')
 
                 if attachment not in self.instance.files.all():
-                    raise serializers.ValidationError(
-                        {f'file({attachment.id})': [Text.FILE_NOT_EXIST]}
-                    )
+                    Error.file_not_exist(f'file({attachment.id})')
 
         return attrs
 
@@ -467,9 +458,7 @@ class ReplySerializer(ModelSerializer):
             attrs['name'] = None
         else:
             if not attrs.get('name'):
-                raise serializers.ValidationError(
-                    {'name': [Text.REQUIRED_FIELD]}
-                )
+                Error.required_field('name')
 
         if attrs.get('reply_id'):
             reply_id = attrs.get('reply_id')
