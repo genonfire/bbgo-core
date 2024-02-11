@@ -13,6 +13,38 @@ class UserDeactivateTest(TestCase):
             address='Seoul'
         )
 
+    def test_check_validation(self):
+        self.post(
+            '/api/accounts/deactivate/'
+        )
+        self.status(401)
+
+        self.post(
+            '/api/accounts/deactivate/',
+            auth=True
+        )
+        self.status(400)
+
+        self.post(
+            '/api/accounts/deactivate/',
+            {
+                'consent': True,
+            },
+            auth=True
+        )
+        self.status(200)
+
+        self.create_user(is_active=False)
+
+        self.post(
+            '/api/accounts/deactivate/',
+            {
+                'consent': True,
+            },
+            auth=True
+        )
+        self.status(401)
+
     def test_check_censored_privacy(self):
         self.post(
             '/api/accounts/auth/sms/',

@@ -225,6 +225,7 @@ class TestCase(APITestCase):
         is_staff=False,
         is_superuser=False,
         is_approved=True,
+        is_active=True,
     ):
         if not username:
             username = accounts.tools.Test.USERNAME
@@ -242,7 +243,8 @@ class TestCase(APITestCase):
             address=address,
             is_approved=is_approved,
             is_staff=is_staff,
-            is_superuser=is_superuser
+            is_superuser=is_superuser,
+            is_active=is_active
         )
 
         self.key = self.user.key()

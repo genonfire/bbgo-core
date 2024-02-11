@@ -198,9 +198,6 @@ class DeactivateAccountSerializer(Serializer):
     consent = serializers.BooleanField()
 
     def validate(self, attrs):
-        if not self.context.get('request').user.is_active:
-            Error.user_deactivated()
-
         if not attrs.get('consent'):
             Error.you_must_consent('consent')
 

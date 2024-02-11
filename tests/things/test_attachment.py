@@ -128,8 +128,22 @@ class FileManageTest(TestCase):
     def setUp(self):
         self.create_user()
         self.create_attachment()
+        self.create_attachment()
         self.create_user(username='admin@a.com', is_staff=True)
         self.create_attachment(name='attachment.txt')
+
+    def test_attachment_list_check_page(self):
+        self.get(
+            '/api/things/files/?page_size=1&page=b',
+            auth=True
+        )
+        self.status(400)
+
+        self.get(
+            '/api/things/files/?page_size=1&page=2',
+            auth=True
+        )
+        self.status(200)
 
     def test_attachment_list_and_delete(self):
         self.get(
@@ -149,7 +163,7 @@ class FileManageTest(TestCase):
             auth=True
         )
         self.status(200)
-        self.check(len(self.data), 2)
+        self.check(len(self.data), 3)
 
         self.delete(
             '/api/things/file/%d/' % self.data[1].get('id'),
@@ -162,7 +176,7 @@ class FileManageTest(TestCase):
             auth=True
         )
         self.status(200)
-        self.check(len(self.data), 1)
+        self.check(len(self.data), 2)
 
         self.delete(
             '/api/things/file/%d/' % self.data[0].get('id'),
@@ -175,4 +189,4 @@ class FileManageTest(TestCase):
             auth=True
         )
         self.status(200)
-        self.check(len(self.data), 0)
+        self.check(len(self.data), 1)

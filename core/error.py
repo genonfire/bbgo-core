@@ -30,9 +30,6 @@ class Error(object):
     def user_not_exist(field='email'):
         ValidationError('USER_NOT_EXIST', field)
 
-    def user_deactivated():
-        ValidationError('USER_IS_DEACTIVATED')
-
     def you_must_consent(field=''):
         ValidationError('YOU_MUST_CONSENT', field)
 
