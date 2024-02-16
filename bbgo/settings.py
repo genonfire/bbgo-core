@@ -74,6 +74,7 @@ try:
     SLACK_TOKEN = ''
     AWS_ACCESS_KEY_ID = ''
     AWS_SECRET_ACCESS_KEY = ''
+    AES_PASSPHRASE = ''
     SECRET_KEY = ''
     # DO NOT COMMIT YOUR SECRETS ABOVE INTO PUBLIC REPOSITORY.
 
@@ -81,6 +82,9 @@ try:
         setattr(sys.modules[__name__], key, value)
 except IOError:
     raise IOError('Error while loading %s.' % SECRETS_PATH)
+
+if not AES_PASSPHRASE:
+    AES_PASSPHRASE = SECRET_KEY
 
 
 # Default configurations.

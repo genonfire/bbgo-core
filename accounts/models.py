@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
+from core.fields import EncryptedCharField
 from utils.constants import Const
 from utils.datautils import true_or_false
 from utils.debug import Debug  # noqa
@@ -79,12 +80,12 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    tel = models.CharField(
+    tel = EncryptedCharField(
         max_length=Const.TEL_MAX_LENGTH,
         blank=True,
         null=True,
     )
-    address = models.CharField(
+    address = EncryptedCharField(
         max_length=Const.ADDRESS_MAX_LENGTH,
         blank=True,
         null=True

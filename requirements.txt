@@ -12,6 +12,7 @@ packaging
 pillow
 psycopg2
 pur
+pycryptodomex
 setuptools
 six
 tblib

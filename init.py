@@ -52,6 +52,7 @@ DEFAULT_SECRETS = {
     "SLACK_TOKEN": "",
     "AWS_ACCESS_KEY_ID": "",
     "AWS_SECRET_ACCESS_KEY": "",
+    "AES_PASSPHRASE": "",
     "SECRET_KEY": get_random_secret_key()
 }
 CONFIG_PATH = 'config.json'
