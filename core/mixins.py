@@ -1,3 +1,5 @@
+import sys
+
 from django.conf import settings
 
 from core.response import Response
@@ -70,7 +72,11 @@ class ResponseMixin():
         return None
 
     def get_order(self):
-        sort = self.sort_default | self.sort_option
+        if sys.version_info >= (3, 9):
+            sort = self.sort_default | self.sort_option
+        else:
+            sort = dict(self.sort_default.items() | self.sort_option.items())
+
         return sort.get(
             self.request.query_params.get(Const.QUERY_PARAM_SORT),
             self.default_order
