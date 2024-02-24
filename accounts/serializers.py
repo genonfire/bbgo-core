@@ -241,12 +241,8 @@ class IAmSerializer(ModelSerializer):
             'last_name',
             'call_name',
             'photo',
-            'tel',
-            'address',
             'is_staff',
             'is_approved',
-            'date_joined',
-            'last_login',
         ]
 
 
