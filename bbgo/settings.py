@@ -108,7 +108,7 @@ DO_NOT_SEND_SMS = True
 SEND_TEST_EMAIL = False
 TEST_EMAIL_ADDRESS = EMAIL_ADDRESS
 USER_DEFAULT_APPROVED = False
-USE_LOGIN_DEVICE = True
+USE_LOGIN_DEVICE = False
 
 # Load project configuration from CONFIG_PATH if exist. (config.json)
 try:

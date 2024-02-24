@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -58,12 +59,21 @@ class PasswordTest(TestCase):
         )
         self.check_not(self.data.get('key'), self.key)
 
+        settings.USE_LOGIN_DEVICE = True
+
         self.auth_header = 'Token ' + self.data.get('key')
         self.get(
             '/api/accounts/devices/',
             auth=True
         )
         self.check(len(self.data), 1)
+
+        settings.USE_LOGIN_DEVICE = False
+        self.get(
+            '/api/accounts/devices/',
+            auth=True
+        )
+        self.status(403)
 
     def test_password_change_check_wrong_password(self):
         self.post(

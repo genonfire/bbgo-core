@@ -125,6 +125,13 @@ class LoginDeviceViewSet(ModelViewSet):
     model = models.LoginDevice
     permission_classes = [IsAuthenticated]
 
+    def get_permissions(self):
+        if settings.USE_LOGIN_DEVICE:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
+
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return self.model.objects.filter(user=self.request.user)
