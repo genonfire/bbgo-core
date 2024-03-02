@@ -14,6 +14,7 @@ def custom_exception_handler(exc, context):
                 'error': {
                     'code': 'DRF_FIELD_ERROR',
                     'message': '',
+                    'keys': list(response.data.keys()),
                     'field': response.data
                 }
             }
