@@ -27,9 +27,6 @@ class Error(object):
     def alpha_number_only(field):
         ValidationError('ALPHABETS_NUMBER_ONLY', field)
 
-    def user_not_exist(field='email'):
-        ValidationError('USER_NOT_EXIST', field)
-
     def you_must_consent(field=''):
         ValidationError('YOU_MUST_CONSENT', field)
 

@@ -124,7 +124,7 @@ class PasswordTest(TestCase):
                 'email': 'p.queen@a.com',
             },
         )
-        self.status(400)
+        self.status(200)
 
     def test_reset_password_invalid_form(self):
         self.post(

@@ -14,7 +14,6 @@ from core.serializers import (
     ModelSerializer,
     Serializer
 )
-from core.shortcuts import get_object_or_404
 from core.wrapper import async_func
 from utils.constants import Const
 from utils.debug import Debug  # noqa
@@ -155,15 +154,6 @@ class PasswordResetSerializer(Serializer):
     form_class = PasswordResetForm
 
     def validate(self, attrs):
-        email = attrs.get('email')
-        self.password_reset_form = self.form_class(data=self.initial_data)
-
-        if (
-            not self.password_reset_form.is_valid() or
-            not models.User.objects.filter(username__iexact=email).exists()
-        ):
-            Error.user_not_exist()
-
         self.language = Text.language()
         return attrs
 
@@ -172,12 +162,16 @@ class PasswordResetSerializer(Serializer):
         if settings.DO_NOT_SEND_EMAIL:
             return
 
-        Text.activate(self.language)
-
-        user = get_object_or_404(
-            models.User,
+        users = models.User.objects.filter(
             username=self.validated_data.get('email')
         )
+        if users.exists():
+            user = users.latest('id')
+        else:
+            return
+
+        Text.activate(self.language)
+
         opts = {
             'domain_override': settings.FRONTEND_URL,
             'subject_template_name': 'password_reset_subject.txt',
