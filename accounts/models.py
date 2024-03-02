@@ -10,6 +10,7 @@ from core.fields import EncryptedCharField
 from utils.constants import Const
 from utils.datautils import true_or_false
 from utils.debug import Debug  # noqa
+from utils.text import Text
 
 from . import tools
 
@@ -58,6 +59,9 @@ class UserManager(DjangoUserManager):
 class User(AbstractUser):
     username = models.EmailField(
         unique=True,
+        error_messages={
+            'unique': Text.USERNAME_EXISTS,
+        },
     )
     first_name = models.CharField(
         max_length=Const.NAME_MAX_LENGTH,

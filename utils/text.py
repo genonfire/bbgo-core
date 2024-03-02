@@ -14,7 +14,7 @@ class _Text(object):
     INVALID_PASSWORD = _("Invalid password.")
     SAME_AS_OLD_PASSWORD = _("Same as old password.")
     USER_NOT_EXIST = _("User not exist.")
-    USERNAME_EXISTS = _("Username exists.")
+    USERNAME_EXISTS = _("Email invalid or already taken.")
     INVALID_UID = _("Invalid uid.")
     INVALID_TOKEN = _("Invalid token.")
     YOU_MUST_CONSENT = _("You must consent.")

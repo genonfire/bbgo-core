@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-21 11:31+0900\n"
+"POT-Creation-Date: 2024-03-02 17:18+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bbgo/settings.py:251
+#: bbgo/settings.py:255
 msgid "Korean"
 msgstr ""
 
-#: bbgo/settings.py:252
+#: bbgo/settings.py:256
 msgid "English"
 msgstr ""
 
@@ -88,7 +88,7 @@ msgid "User not exist."
 msgstr ""
 
 #: utils/text.py:17
-msgid "Username exists."
+msgid "Email invalid or already taken."
 msgstr ""
 
 #: utils/text.py:18
