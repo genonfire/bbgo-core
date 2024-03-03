@@ -154,6 +154,10 @@ class PasswordResetSerializer(Serializer):
     form_class = PasswordResetForm
 
     def validate(self, attrs):
+        self.password_reset_form = self.form_class(data=self.initial_data)
+        if not self.password_reset_form.is_valid():
+            Error.required_field('email')
+
         self.language = Text.language()
         return attrs
 
