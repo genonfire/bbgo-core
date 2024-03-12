@@ -148,6 +148,8 @@ class UserAdminTest(TestCase):
                 'first_name': 'staff',
                 'last_name': 'stephen',
                 'call_name': 'st',
+                'tel': '12345',
+                'address': '10th st.',
                 'is_active': True,
                 'is_staff': True,
                 'is_superuser': False,
@@ -176,6 +178,8 @@ class UserAdminTest(TestCase):
         self.check(self.data.get('first_name'), 'step')
         self.check(self.data.get('last_name'), 'stephen')
         self.check(self.data.get('call_name'), 'st')
+        self.check(self.data.get('tel'), '12345')
+        self.check(self.data.get('address'), '10th st.')
         self.check(self.data.get('is_active'))
         self.check(self.data.get('is_staff'))
         self.check(self.data.get('is_superuser'))
