@@ -25,6 +25,7 @@ class ProfileTest(TestCase):
         self.check(self.data.get('last_name'), self.user.last_name)
         self.check(self.data.get('call_name'), self.user.call_name)
         self.check(self.data.get('is_approved'), self.user.is_approved)
+        self.check(self.data.get('is_staff'), self.user.is_staff)
 
     def test_update_profile(self):
         self.patch(
@@ -38,6 +39,7 @@ class ProfileTest(TestCase):
                 'tel': '+82-10-1234-5678',
                 'address': '3245 146th PL SE',
                 'is_approved': not self.user.is_approved,
+                'is_staff': not self.user.is_staff,
             },
             format='multipart',
             auth=True
@@ -50,6 +52,7 @@ class ProfileTest(TestCase):
         self.check(self.data.get('tel'), '+82-10-1234-5678')
         self.check(self.data.get('address'), '3245 146th PL SE')
         self.check(self.data.get('is_approved'), self.user.is_approved)
+        self.check(self.data.get('is_staff'), self.user.is_staff)
 
     def test_callname_not_allow_null(self):
         self.patch(

@@ -215,11 +215,13 @@ class UserSettingSerializer(ModelSerializer):
             'tel',
             'address',
             'is_approved',
+            'is_staff',
             'date_joined',
         ]
         read_only_fields = [
             'username',
             'is_approved',
+            'is_staff',
             'date_joined',
         ]
         extra_kwargs = {
