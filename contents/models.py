@@ -141,7 +141,7 @@ class Blog(models.Model):
     )
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-    modified_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(blank=True, null=True)
 
     objects = BlogManager()
 
@@ -232,7 +232,7 @@ class Comment(models.Model):
     content = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-    modified_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(blank=True, null=True)
 
     objects = CommentManager()
 

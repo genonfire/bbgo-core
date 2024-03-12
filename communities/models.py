@@ -164,7 +164,7 @@ class Thread(models.Model):
     is_pinned = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-    modified_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(blank=True, null=True)
 
     objects = ThreadManager()
 
@@ -275,7 +275,7 @@ class Reply(models.Model):
     )
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-    modified_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(blank=True, null=True)
 
     objects = ReplyManager()
 
