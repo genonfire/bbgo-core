@@ -41,8 +41,11 @@ class ForumReadOnlyViewSet(ReadOnlyModelViewSet):
     model = models.Forum
     permission_classes = [IsAdminUser]
 
+    def get_filters(self):
+        return self.model.objects.query_active(self.request.query_params)
+
     def get_queryset(self):
-        return self.model.objects.search(self.q)
+        return self.model.objects.search(self.q, self.get_filters())
 
 
 class ThreadViewSet(ModelViewSet):

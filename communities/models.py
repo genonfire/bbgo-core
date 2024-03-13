@@ -14,16 +14,28 @@ from utils.debug import Debug  # noqa
 
 
 class ForumManager(models.Manager):
-    def search(self, q):
+    def query_active(self, q):
+        active = true_or_false(q.get(Const.QUERY_PARAM_ACTIVE))
+        if active:
+            return Q(is_active=active)
+        else:
+            return Q()
+
+    def forum_query(self, q):
+        search_query = Q()
         if q:
-            query = (
+            search_query = (
                 Q(name__icontains=q) |
                 Q(title__icontains=q) |
                 Q(description__icontains=q)
             )
-        else:
-            query = Q()
-        return self.filter(query).distinct()
+        return search_query
+
+    def search(self, q, filters):
+        if not filters:
+            filters = Q()
+
+        return self.filter(filters).filter(self.forum_query(q)).distinct()
 
 
 class Forum(models.Model):

@@ -392,11 +392,19 @@ class ForumListTest(TestCase):
             'fish',
             'snake',
         ]
+        sample_active = [
+            False,
+            True,
+            True,
+            False,
+            True,
+        ]
         forum_list = []
         for index in range(5):
             forum = self.create_forum(
                 name=sample_name[index],
-                title=sample_title[index]
+                title=sample_title[index],
+                is_active=sample_active[index]
             )
             forum_list.append(forum)
 
@@ -409,6 +417,7 @@ class ForumListTest(TestCase):
             self.check(self.data[index].get('id'), forum.id)
             self.check(self.data[index].get('name'), forum.name)
             self.check(self.data[index].get('title'), forum.title)
+            self.check(self.data[index].get('is_active'), forum.is_active)
             self.check(self.data[index].get('thread_count'), 0)
             self.check(self.data[index].get('reply_count'), 0)
 
@@ -419,3 +428,17 @@ class ForumListTest(TestCase):
         self.status(200)
         self.check_in('black', self.data[0].get('title'))
         self.check_in('black', self.data[1].get('name'))
+
+        self.get(
+            '/api/communities/forums/?q=black&active=False',
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data), 1)
+
+        self.get(
+            '/api/communities/forums/?&active=true',
+            auth=True
+        )
+        self.status(200)
+        self.check(len(self.data), 3)
