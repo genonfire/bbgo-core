@@ -125,6 +125,7 @@ class ForumListSerializer(ForumSerializer):
             'managers',
             'option',
             'is_active',
+            'created_at',
             'thread_count',
             'reply_count',
         ]
