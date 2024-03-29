@@ -15,9 +15,4 @@ urlpatterns = [
             'delete': 'destroy',
         }), name='file_delete'
     ),
-    path(
-        'files/', views.AttachmentManageViewSet.as_view({
-            'get': 'list',
-        }), name='files_manage'
-    ),
 ]

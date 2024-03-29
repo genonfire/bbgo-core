@@ -100,7 +100,7 @@ class FilePermissionTest(TestCase):
 
     def test_attachment_manage_permission(self):
         self.get(
-            '/api/things/files/',
+            '/api/admin/files/',
             auth=True
         )
         self.status(403)
@@ -134,20 +134,20 @@ class FileManageTest(TestCase):
 
     def test_attachment_list_check_page(self):
         self.get(
-            '/api/things/files/?page_size=1&page=b',
+            '/api/admin/files/?page_size=1&page=b',
             auth=True
         )
         self.status(400)
 
         self.get(
-            '/api/things/files/?page_size=1&page=2',
+            '/api/admin/files/?page_size=1&page=2',
             auth=True
         )
         self.status(200)
 
     def test_attachment_list_and_delete(self):
         self.get(
-            '/api/things/files/?q=attachment',
+            '/api/admin/files/?q=attachment',
             auth=True
         )
         self.status(200)
@@ -159,7 +159,7 @@ class FileManageTest(TestCase):
         self.check(self.data[0].get('filename'), 'attachment.txt')
 
         self.get(
-            '/api/things/files/',
+            '/api/admin/files/',
             auth=True
         )
         self.status(200)
@@ -172,7 +172,7 @@ class FileManageTest(TestCase):
         self.status(204)
 
         self.get(
-            '/api/things/files/',
+            '/api/admin/files/',
             auth=True
         )
         self.status(200)
@@ -185,7 +185,7 @@ class FileManageTest(TestCase):
         self.status(204)
 
         self.get(
-            '/api/things/files/',
+            '/api/admin/files/',
             auth=True
         )
         self.status(200)

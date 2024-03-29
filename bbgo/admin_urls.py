@@ -3,6 +3,7 @@ from django.urls import path
 from accounts import views as accounts_views
 from communities import views as communities_views
 from contents import views as contents_views
+from things import views as things_views
 
 
 urlpatterns = [
@@ -83,5 +84,10 @@ urlpatterns = [
         contents_views.CommentAdminRestoreViewSet.as_view({
             'post': 'restore'
         }), name='restore_comment'
+    ),
+    path(
+        'files/', things_views.AttachmentManageViewSet.as_view({
+            'get': 'list',
+        }), name='files'
     ),
 ]
