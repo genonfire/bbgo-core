@@ -27,6 +27,16 @@ urlpatterns = [
         }), name='retrieve_forum'
     ),
     path(
+        'f/<str:forum>/', views.ThreadListViewSet.as_view({
+            'get': 'list',
+        }), name='threads'
+    ),
+    path(
+        'f/<str:forum>/seek/', views.ThreadSeekViewSet.as_view({
+            'get': 'seek',
+        }), name='seek_forum'
+    ),
+    path(
         'f/<str:forum>/write/', views.ThreadViewSet.as_view({
             'post': 'create',
         }), name='new_thread'
@@ -42,11 +52,6 @@ urlpatterns = [
             'post': 'attach_files',
             'delete': 'delete_files',
         }), name='thread_file'
-    ),
-    path(
-        'f/<str:forum>/', views.ThreadListViewSet.as_view({
-            'get': 'list',
-        }), name='threads'
     ),
     path(
         'f/<str:forum>/read/<int:pk>/', views.ThreadReadOnlyViewSet.as_view({

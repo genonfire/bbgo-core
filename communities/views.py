@@ -230,6 +230,15 @@ class ThreadListViewSet(ThreadReadOnlyViewSet):
         return self.get_paginated_response(data)
 
 
+class ThreadSeekViewSet(ThreadListViewSet):
+    def seek(self, request, *args, **kwargs):
+        serializer = self.set_serializer(
+            serializers.ForumThreadSerializer,
+            self.forum
+        )
+        return Response(serializer.data)
+
+
 class ThreadTrashViewSet(ThreadListViewSet):
     serializer_class = serializers.ThreadTrashSerializer
     model = models.Thread

@@ -205,6 +205,7 @@ class ForumCreateTest(TestCase):
                     }
                 ],
                 'option': {
+                    'permission_list': Const.PERMISSION_ALL,
                     'permission_read': Const.PERMISSION_ALL,
                     'permission_write': Const.PERMISSION_STAFF,
                     'permission_reply': Const.PERMISSION_MEMBER,
@@ -221,10 +222,30 @@ class ForumCreateTest(TestCase):
         self.check_not(self.data.get('is_active'))
 
         option = self.data.get('option')
+        self.check(option.get('permission_list'), Const.PERMISSION_ALL)
         self.check(option.get('permission_read'), Const.PERMISSION_ALL)
         self.check(option.get('permission_write'), Const.PERMISSION_STAFF)
         self.check(option.get('permission_reply'), Const.PERMISSION_MEMBER)
         self.check(option.get('permission_vote'), Const.PERMISSION_MEMBER)
+
+        managers = self.data.get('managers')
+        self.check(len(managers), 2)
+        for manager in managers:
+            self.check_in(manager.get('id'), manager_list)
+
+        self.get(
+            '/api/communities/f/illegallysmolcats/seek/',
+            auth=True
+        )
+        self.status(200)
+        self.check(self.data.get('name'), 'illegallysmolcats')
+        self.check(self.data.get('title'), 'Illegally Small Cats')
+        self.check(self.data.get('description'), 'why so small')
+
+        permissions = self.data.get('permissions')
+        self.check(permissions.get('write'), True)
+        self.check(permissions.get('reply'), True)
+        self.check(permissions.get('vote'), True)
 
         managers = self.data.get('managers')
         self.check(len(managers), 2)
