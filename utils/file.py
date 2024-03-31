@@ -11,5 +11,5 @@ def generate_filename(filename):
 
 def get_original_filename(filepath):
     file_root, file_ext = os.path.splitext(filepath)
-    file_name = file_root.split('/')[-1].split('_')[0]
+    file_name = '_'.join(file_root.split('/')[-1].split('_')[:-1])
     return file_name + file_ext
