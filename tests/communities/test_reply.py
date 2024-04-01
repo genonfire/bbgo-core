@@ -339,6 +339,12 @@ class ReplyModelTest(TestCase):
         self.status(201)
         self.check(self.data.get('reply_id'), reply_id)
 
+        self.get(
+            '/api/communities/f/%s/' % self.forum.name,
+            auth=True
+        )
+        self.check(self.data.get('threads')[0].get('reply_count'), 4)
+
     def test_reply_edit_delete(self):
         self.patch(
             '/api/communities/r/%d/' % self.reply.id,
@@ -366,6 +372,14 @@ class ReplyModelTest(TestCase):
         self.check(self.data.get('reply_id'), 0)
         self.check_not(self.data.get('name'))
 
+        self.get(
+            '/api/communities/f/%s/read/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.check(self.data.get('reply_count'), 1)
+
         self.delete(
             '/api/communities/r/%d/' % self.reply.id,
             auth=True
@@ -378,6 +392,14 @@ class ReplyModelTest(TestCase):
         )
         self.check(len(self.data), 1)
         self.check(self.data[0].get('is_deleted'))
+
+        self.get(
+            '/api/communities/f/%s/read/%d/' % (
+                self.forum.name, self.thread.id
+            ),
+            auth=True
+        )
+        self.check(self.data.get('reply_count'), 0)
 
     def test_reply_to_invalid_id(self):
         thread_id = int(self.thread.id) + 1

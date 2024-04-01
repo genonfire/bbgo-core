@@ -198,10 +198,16 @@ class Thread(models.Model):
     def down(self):
         return self.down_users.count()
 
+    def reply_count(self):
+        return Reply.objects.active_count(self)
+
 
 class ReplyManager(models.Manager):
     def active(self):
         return self.filter(is_deleted=False)
+
+    def active_count(self, thread):
+        return self.active().filter(thread=thread).count()
 
     def thread(self, thread, user):
         if isinstance(thread, Thread):
