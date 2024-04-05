@@ -397,7 +397,7 @@ class ThreadTrashSerializer(ThreadListSerializer):
             'down',
             'is_pinned',
             'is_deleted',
-            'modified_at',
+            'date_or_time',
         ]
 
 
