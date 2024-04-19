@@ -63,7 +63,7 @@ class ReplyAdmin(admin.ModelAdmin):
         'reply_id',
         'content',
         'is_deleted',
-        'modified_at',
+        'created_at',
     )
     search_fields = (
         'user',
