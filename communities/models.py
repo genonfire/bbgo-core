@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import (
     Case,
+    F,
     IntegerField,
     Q,
     When,
@@ -220,11 +221,11 @@ class ReplyManager(models.Manager):
 
         replies = self.filter(thread_replies).annotate(
             custom_order=Case(
-                When(reply_id=0, then='id'),
-                default='reply_id',
+                When(reply_id=0, then=F('id')),
+                default=F('reply_id'),
                 output_field=IntegerField(),
             )
-        ).order_by('custom_order', 'id')
+        ).order_by('-custom_order', 'id')
         return replies
 
     def my(self, user):

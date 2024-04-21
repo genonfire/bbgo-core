@@ -480,16 +480,16 @@ class ReplyListTest(TestCase):
             auth=True
         )
         self.check(len(self.data), 5)
-        self.check(self.data[0].get('content'), '1')
+        self.check(self.data[0].get('content'), '5')
         self.check(self.data[0].get('reply_id'), 0)
-        self.check(self.data[1].get('content'), '2')
-        self.check(self.data[1].get('reply_id'), reply_id)
-        self.check(self.data[2].get('content'), '3')
-        self.check(self.data[2].get('reply_id'), reply_id)
-        self.check(self.data[3].get('content'), '4')
-        self.check(self.data[3].get('reply_id'), 0)
-        self.check(self.data[4].get('content'), '5')
-        self.check(self.data[4].get('reply_id'), 0)
+        self.check(self.data[1].get('content'), '4')
+        self.check(self.data[1].get('reply_id'), 0)
+        self.check(self.data[2].get('content'), '1')
+        self.check(self.data[2].get('reply_id'), 0)
+        self.check(self.data[3].get('content'), '2')
+        self.check(self.data[3].get('reply_id'), reply_id)
+        self.check(self.data[4].get('content'), '3')
+        self.check(self.data[4].get('reply_id'), reply_id)
 
         self.delete(
             '/api/communities/r/%d/' % self.data[4].get('id'),
