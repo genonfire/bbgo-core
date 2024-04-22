@@ -422,6 +422,7 @@ class ThreadAdminSerializer(ThreadListSerializer):
             'title',
             'up',
             'down',
+            'reply_count',
             'is_pinned',
             'is_deleted',
             'created_at',
