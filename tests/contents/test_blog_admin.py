@@ -177,16 +177,26 @@ class BlogAdminListTest(TestCase):
         self.jake = self.create_user(username='jake@a.com', is_staff=True)
         self.create_user(is_staff=True)
 
+        self.category = {
+            'category': [
+                'hobby',
+                'asmr'
+            ]
+        }
+
         self.patch(
             '/api/contents/blog_option/',
-            {
-                'category': [
-                    'hobby',
-                    'asmr'
-                ]
-            },
+            self.category,
             auth=True
         )
+
+    def test_blog_admin_check_filter(self):
+        self.get(
+            '/api/admin/blogs/',
+            auth=True
+        )
+        self.status(200)
+        self.check(self.response.data.get('filter'), self.category)
 
     def test_blog_admin_list(self):
         sample_category = [

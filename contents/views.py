@@ -168,6 +168,11 @@ class _BlogAdminViewSet(ModelViewSet):
 class BlogAdminListViewSet(_BlogAdminViewSet):
     serializer_class = serializers.BlogListSerializer
 
+    def get_filter_list(self):
+        return {
+            'category': models.BlogOption.objects.get().category
+        }
+
 
 class BlogAdminViewSet(_BlogAdminViewSet):
     def sync_update(self, instance, partial):

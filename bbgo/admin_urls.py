@@ -58,7 +58,7 @@ urlpatterns = [
     ),
     path(
         'blogs/', contents_views.BlogAdminListViewSet.as_view({
-            'get': 'list',
+            'get': 'filter_list',
         }), name='blogs'
     ),
     path(
