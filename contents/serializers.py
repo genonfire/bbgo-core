@@ -10,6 +10,7 @@ from core.shortcuts import get_object_or_404
 from utils.constants import Const
 from utils.datautils import get_object_from_dict
 from utils.debug import Debug  # noqa
+from utils.netutils import get_ip_address
 from things import serializers as things_serializers
 
 from . import models
@@ -73,6 +74,7 @@ class BlogSerializer(ModelSerializer):
             'created_at',
             'modified_at',
             'editable',
+            'liked',
         ]
         extra_kwargs = {
             'title': Const.REQUIRED,
@@ -140,6 +142,8 @@ class BlogListSerializer(BlogSerializer):
 
 
 class BlogReadSerializer(BlogSerializer):
+    liked = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Blog
         fields = [
@@ -155,7 +159,13 @@ class BlogReadSerializer(BlogSerializer):
             'created_at',
             'modified_at',
             'editable',
+            'liked',
         ]
+
+    def get_liked(self, obj):
+        like_users = obj.like_users or []
+        ip_address = get_ip_address(self.context.get('request'))
+        return bool(ip_address in like_users)
 
 
 class BlogLikeSerializer(BlogSerializer):

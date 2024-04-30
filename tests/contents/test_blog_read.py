@@ -407,6 +407,7 @@ class BlogReadTest(TestCase):
         )
         self.status(200)
         self.check_not(self.data.get('editable'))
+        self.check_not(self.data.get('liked'))
 
         self.create_user(username='member@a.com')
         self.get(

@@ -166,3 +166,4 @@ class BlogLikeTest(TestCase):
             '/api/contents/blogs/%d/' % self.blog.id,
         )
         self.check(self.data.get('like'), 1)
+        self.check(self.data.get('liked'))
