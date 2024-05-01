@@ -274,6 +274,25 @@ class BlogCommentTest(TestCase):
         self.check_not(self.data.get('is_deleted'))
         self.check(self.data.get('editable'))
 
+    def test_comment_check_count(self):
+        self.get(
+            '/api/contents/blogs/%d/' % self.blog.id,
+            auth=True
+        )
+        self.check(self.data.get('comment_count'), 1)
+
+        self.delete(
+            '/api/contents/comment/%d/' % self.comment.id,
+            auth=True
+        )
+        self.status(200)
+
+        self.get(
+            '/api/contents/blogs/%d/' % self.blog.id,
+            auth=True
+        )
+        self.check(self.data.get('comment_count'), 0)
+
     def test_comment_update_permission(self):
         self.patch(
             '/api/contents/comment/%d/' % self.comment.id,
@@ -488,16 +507,16 @@ class CommentListTest(TestCase):
             auth=True
         )
         self.check(len(self.data), 5)
-        self.check(self.data[0].get('content'), 'A')
+        self.check(self.data[0].get('content'), 'E')
         self.check(self.data[0].get('comment_id'), 0)
-        self.check(self.data[1].get('content'), 'B')
-        self.check(self.data[1].get('comment_id'), comment.id)
-        self.check(self.data[2].get('content'), 'C')
-        self.check(self.data[2].get('comment_id'), comment.id)
-        self.check(self.data[3].get('content'), 'D')
-        self.check(self.data[3].get('comment_id'), 0)
-        self.check(self.data[4].get('content'), 'E')
-        self.check(self.data[4].get('comment_id'), 0)
+        self.check(self.data[1].get('content'), 'D')
+        self.check(self.data[1].get('comment_id'), 0)
+        self.check(self.data[2].get('content'), 'A')
+        self.check(self.data[2].get('comment_id'), 0)
+        self.check(self.data[3].get('content'), 'B')
+        self.check(self.data[3].get('comment_id'), comment.id)
+        self.check(self.data[4].get('content'), 'C')
+        self.check(self.data[4].get('comment_id'), comment.id)
 
         self.delete(
             '/api/contents/comment/%d/' % comment.id,

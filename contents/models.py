@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import (
     Case,
+    F,
     IntegerField,
     Q,
     When,
@@ -154,6 +155,9 @@ class Blog(models.Model):
         else:
             return 0
 
+    def comment_count(self):
+        return Comment.objects.active_count(self)
+
 
 class CommentManager(models.Manager):
     def my(self, user):
@@ -164,6 +168,9 @@ class CommentManager(models.Manager):
 
     def active(self):
         return self.filter(is_deleted=False)
+
+    def active_count(self, blog):
+        return self.active().filter(blog=blog).count()
 
     def deleted(self):
         return self.filter(is_deleted=True)
@@ -179,11 +186,11 @@ class CommentManager(models.Manager):
 
         comments = self.filter(blog_comments).annotate(
             custom_order=Case(
-                When(comment_id=0, then='id'),
-                default='comment_id',
+                When(comment_id=0, then=F('id')),
+                default=F('comment_id'),
                 output_field=IntegerField(),
             )
-        ).order_by('custom_order', 'id')
+        ).order_by('-custom_order', 'id')
         return comments
 
     def admin_query(self, q):
