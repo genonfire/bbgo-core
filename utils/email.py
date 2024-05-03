@@ -29,7 +29,7 @@ class _EmailHelper(object):
 
     def _send(
         self, subject, body, from_email=None, to=None, bcc=None, cc=None,
-        html_subject=None, html_body=None, attachment=None, filename=None,
+        html_subject=None, html_body=None, filename=None, content=None,
         mimetype=None, context=None
     ):
         if settings.DO_NOT_SEND_EMAIL:
@@ -54,8 +54,10 @@ class _EmailHelper(object):
         if html_body:
             html_email = render_to_string(html_body, context)
             email.attach_alternative(html_email, 'text/html')
-        if attachment and filename and mimetype:
-            email.attach(filename, attachment, mimetype)
+        if filename and content and mimetype:
+            email.attach(filename, content, mimetype)
+        elif filename:
+            email.attach_file(filename)
 
         try:
             email.send(fail_silently=False)
@@ -66,7 +68,7 @@ class _EmailHelper(object):
 
     def send_to(
         self, subject, body, from_email=None, user=None, email=None,
-        html_subject=None, html_body=None, attachment=None, filename=None,
+        html_subject=None, html_body=None, filename=None, content=None,
         mimetype=None, context=None
     ):
         """
@@ -87,15 +89,15 @@ class _EmailHelper(object):
             to=[email],
             html_subject=html_subject,
             html_body=html_body,
-            attachment=attachment,
             filename=filename,
+            content=content,
             mimetype=mimetype,
             context=context
         )
 
     def send_direct(
         self, subject, body, from_email=None, user=None, email=None,
-        html_subject=None, html_body=None, attachment=None, filename=None,
+        html_subject=None, html_body=None, filename=None, content=None,
         mimetype=None, context=None
     ):
         """
@@ -138,7 +140,7 @@ class _EmailHelper(object):
 
     def send_bcc(
         self, subject, body, from_email=None, to=None, recipients=None,
-        html_subject=None, html_body=None, attachment=None, filename=None,
+        html_subject=None, html_body=None, filename=None, content=None,
         mimetype=None, context=None
     ):
         """
@@ -157,14 +159,15 @@ class _EmailHelper(object):
             bcc=bcc,
             html_subject=html_subject,
             html_body=html_body,
-            attachment=attachment,
+            filename=filename,
+            content=content,
             mimetype=mimetype,
             context=context
         )
 
     def send(
         self, subject, body, from_email=None, to=None, cc=None, bcc=None,
-        html_subject=None, html_body=None, attachment=None, filename=None,
+        html_subject=None, html_body=None, filename=None, content=None,
         mimetype=None, context=None
     ):
         """
@@ -188,7 +191,8 @@ class _EmailHelper(object):
             bcc=bcc,
             html_subject=html_subject,
             html_body=html_body,
-            attachment=attachment,
+            filename=filename,
+            content=content,
             mimetype=mimetype,
             context=context
         )

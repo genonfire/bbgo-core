@@ -15,8 +15,16 @@ def daily_task():
     Debug.print('Staring %s daily task...' % today)
     Debug.print('%s daily task finished.' % today)
 
+    if now.weekday() == 0:
+        weekly_task()
+
     if today.day == 1:
         monthly_task()
+
+
+def weekly_task():
+    Debug.print('Staring weekly task...')
+    Debug.print('weekly task finished.')
 
 
 def monthly_task():
