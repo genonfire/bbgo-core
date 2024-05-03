@@ -30,6 +30,12 @@ class BlogOptionTest(TestCase):
         )
         self.status(403)
 
+    def test_blog_option_check_default(self):
+        self.get(
+            '/api/contents/blog_option/'
+        )
+        self.check(self.data.get('option'), Const.BLOG_OPTION_DEFAULT)
+
     def test_blog_option_check_fields(self):
         self.patch(
             '/api/contents/blog_option/',

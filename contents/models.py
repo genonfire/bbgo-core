@@ -18,7 +18,11 @@ from utils.debug import Debug  # noqa
 
 class BlogOptionManager(models.Manager):
     def get(self):
-        return self.get_or_create(name=settings.SITE_NAME)[0]
+        instance, created = self.get_or_create(name=settings.SITE_NAME)
+        if created:
+            instance.option = Const.BLOG_OPTION_DEFAULT
+            instance.save()
+        return instance
 
 
 class BlogOption(models.Model):
