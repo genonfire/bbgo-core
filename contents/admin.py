@@ -25,10 +25,8 @@ class BlogOptionAdmin(admin.ModelAdmin):
 class BlogAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        'user',
         'title',
         'category',
-        'tags',
         'is_published',
         'like',
         'created_at',
