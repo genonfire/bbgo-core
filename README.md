@@ -7,6 +7,8 @@ Total bbs system made by django
 
 bbgo-ui: https://github.com/genonfire/bbgo-ui
 
+UI Demo: https://genonfire.github.io/bbgo-demo/
+
 
 # Create database before setup
 
