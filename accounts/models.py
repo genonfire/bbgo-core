@@ -17,7 +17,7 @@ from . import tools
 
 class UserManager(DjangoUserManager):
     def active(self):
-        return self.filter(is_superuser=False).filter(is_active=True)
+        return self.filter(is_active=True)
 
     def approved(self):
         return self.active().filter(is_approved=True)
