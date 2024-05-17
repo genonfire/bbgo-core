@@ -10,8 +10,8 @@ python manage.py flush --noinput
 
 declare -a fixtures_backup=(
     "./frontend/upload/fixtures/things.json"
-    "./frontend/upload/fixtures/accounts.json"
     "./frontend/upload/fixtures/attachments.json"
+    "./frontend/upload/fixtures/accounts.json"
     "./frontend/upload/fixtures/token.json"
 )
 
