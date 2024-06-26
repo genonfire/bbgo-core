@@ -27,7 +27,7 @@ class BlogOptionSerializer(ModelSerializer):
         ]
 
     def validate(self, attrs):
-        option = models.BlogOption.objects.get().option
+        option = self.instance.option.copy()
 
         if attrs.get('option'):
             for attr, value in option.items():
