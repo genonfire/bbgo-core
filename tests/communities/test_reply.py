@@ -118,6 +118,7 @@ class ReplyPermissionTest(TestCase):
 
     def test_permission_reply_member(self):
         option = self.create_option(
+            permission_read=Const.PERMISSION_ALL,
             permission_reply=Const.PERMISSION_MEMBER
         )
         self.create_forum(option=option)
@@ -171,6 +172,7 @@ class ReplyPermissionTest(TestCase):
 
     def test_permission_reply_staff(self):
         option = self.create_option(
+            permission_read=Const.PERMISSION_ALL,
             permission_reply=Const.PERMISSION_STAFF
         )
         self.create_forum(option=option)
@@ -301,6 +303,7 @@ class ReplyPermissionTest(TestCase):
 class ReplyModelTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
         self.create_forum()
         self.create_thread()
         self.create_reply()
@@ -427,6 +430,7 @@ class ReplyModelTest(TestCase):
 class ReplyListTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
         self.create_forum()
         self.create_thread()
 
@@ -514,6 +518,7 @@ class ReplyVoteTest(TestCase):
         self.create_user(is_staff=True)
 
     def test_reply_check_vote_user(self):
+        self.create_option()
         self.create_forum()
         self.create_thread()
         self.create_reply()

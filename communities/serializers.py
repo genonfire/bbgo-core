@@ -45,7 +45,7 @@ class ForumSerializer(ModelSerializer):
         return attrs
 
     def set_option(self, data):
-        option = Const.FORUM_OPTION_DEFAULT
+        option = Const.FORUM_OPTION_DEFAULT.copy()
 
         for attr, value in Const.FORUM_OPTION_DEFAULT.items():
             option[attr] = data.get(attr, value)

@@ -1,3 +1,5 @@
+import copy
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from core.testcase import TestCase as CoreTestCase
@@ -24,7 +26,7 @@ class TestCase(CoreTestCase):
         permission_vote=None,
         support_files=False
     ):
-        self.option = Const.FORUM_OPTION_DEFAULT
+        self.option = copy.deepcopy(Const.FORUM_OPTION_DEFAULT)
 
         if permission_list:
             self.option['permission_list'] = permission_list
@@ -51,7 +53,10 @@ class TestCase(CoreTestCase):
         is_active=True
     ):
         if not option:
-            option = self.create_option()
+            if not self.option:
+                option = copy.deepcopy(Const.FORUM_OPTION_DEFAULT)
+            else:
+                option = self.option
 
         self.forum = models.Forum.objects.create(
             name=name,

@@ -7,6 +7,7 @@ class ThreadPermissionTest(TestCase):
         self.create_user(is_staff=True)
 
     def test_permission_inactive_forum(self):
+        self.create_option()
         self.create_forum(is_active=False)
         self.create_thread(forum=self.forum)
 
@@ -359,6 +360,7 @@ class ThreadPermissionTest(TestCase):
         self.status(200)
 
     def test_permission_trash(self):
+        self.create_option()
         self.create_forum()
         self.create_user(username='m@a.com')
 
@@ -655,6 +657,7 @@ class ThreadWriteException(TestCase):
 class ThreadListTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
         self.create_forum()
 
     def test_thread_list(self):
@@ -894,6 +897,7 @@ class ThreadPermissionFieldTest(TestCase):
 class ThreadPinTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
         self.create_forum()
         self.create_thread(title='pin me')
 
@@ -934,6 +938,7 @@ class ThreadVoteTest(TestCase):
         self.create_user(is_staff=True)
 
     def test_thread_check_vote_user(self):
+        self.create_option()
         self.create_forum()
         self.create_thread(title='vote me')
 

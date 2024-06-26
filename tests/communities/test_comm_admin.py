@@ -6,6 +6,7 @@ class ThreadAdminTest(TestCase):
         self.john = self.create_user('john@a.com')
         self.jane = self.create_user('jane@a.com')
         self.create_user(is_staff=True)
+        self.create_option()
         self.forum1 = self.create_forum()
         self.create_thread(title='hi')
 
@@ -110,6 +111,7 @@ class ReplyAdminTest(TestCase):
         self.john = self.create_user('john@a.com')
         self.jane = self.create_user('jane@a.com')
         self.create_user(is_staff=True)
+        self.create_option()
         self.forum1 = self.create_forum()
         self.create_thread(title='hi')
         self.create_reply()

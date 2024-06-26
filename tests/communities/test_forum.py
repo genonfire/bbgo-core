@@ -294,6 +294,7 @@ class ForumCreateTest(TestCase):
 class ForumEditTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
         self.create_forum()
 
     def test_edit_forum(self):
@@ -378,6 +379,7 @@ class ForumEditTest(TestCase):
 class ForumDeleteTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
         self.create_forum()
 
     def test_delete_forum(self):
@@ -397,6 +399,7 @@ class ForumDeleteTest(TestCase):
 class ForumListTest(TestCase):
     def setUp(self):
         self.create_user(is_staff=True)
+        self.create_option()
 
     def test_get_forums(self):
         sample_name = [
