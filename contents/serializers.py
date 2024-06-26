@@ -27,10 +27,10 @@ class BlogOptionSerializer(ModelSerializer):
         ]
 
     def validate(self, attrs):
-        option = Const.BLOG_OPTION_DEFAULT
+        option = models.BlogOption.objects.get().option
 
         if attrs.get('option'):
-            for attr, value in Const.BLOG_OPTION_DEFAULT.items():
+            for attr, value in option.items():
                 option[attr] = attrs.get('option').get(attr, value)
 
                 if attr in Const.PERMISSION_LIST:

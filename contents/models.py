@@ -20,7 +20,7 @@ class BlogOptionManager(models.Manager):
     def get(self):
         instance, created = self.get_or_create(name=settings.SITE_NAME)
         if created:
-            instance.option = Const.BLOG_OPTION_DEFAULT
+            instance.option = Const.BLOG_OPTION_DEFAULT.copy()
             instance.save()
         return instance
 
