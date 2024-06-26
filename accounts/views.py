@@ -359,7 +359,7 @@ class AuthCodeAnswerViewSet(AuthCodeViewSet):
         instance.used_at = now
         instance.save()
 
-        tools.approve_user(self.request.user, instance)
+        tools.approve_user(request.user, instance)
         return Response(serializer.data)
 
 
