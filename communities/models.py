@@ -23,14 +23,13 @@ class ForumManager(models.Manager):
             return Q()
 
     def forum_query(self, q):
-        search_query = Q()
         if q:
-            search_query = (
+            return (
                 Q(name__icontains=q) |
                 Q(title__icontains=q) |
                 Q(description__icontains=q)
             )
-        return search_query
+        return Q()
 
     def search(self, q, filters):
         if not filters:
@@ -91,15 +90,14 @@ class ThreadManager(models.Manager):
 
     def search_query(self, q):
         if q:
-            query = (
+            return (
                 Q(title__icontains=q) |
                 Q(content__icontains=q) |
                 (Q(user__isnull=True) & Q(name__icontains=q)) |
                 Q(user__call_name__icontains=q)
             )
         else:
-            query = Q()
-        return query
+            return Q()
 
     def search(self, forum, q):
         return self.forum(forum).filter(self.search_query(q)).distinct()
@@ -236,14 +234,13 @@ class ReplyManager(models.Manager):
 
     def search_query(self, q):
         if q:
-            query = (
+            return (
                 Q(content__icontains=q) |
                 (Q(user__isnull=True) & Q(name__icontains=q)) |
                 Q(user__call_name__icontains=q)
             )
         else:
-            query = Q()
-        return query
+            return Q()
 
     def admin_query(self, q):
         query = Q()

@@ -39,15 +39,14 @@ class UserManager(DjangoUserManager):
         return Q(is_staff=False) & self.query_active(q)
 
     def user_query(self, q):
-        search_query = Q()
         if q:
-            search_query = (
+            return (
                 Q(username__icontains=q) |
                 Q(first_name__icontains=q) |
                 Q(last_name__icontains=q) |
                 Q(call_name__icontains=q)
             )
-        return search_query
+        return Q()
 
     def search(self, q, filters):
         if not filters:

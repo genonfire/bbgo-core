@@ -75,15 +75,13 @@ class BlogManager(models.Manager):
 
     def search_query(self, q):
         if q:
-            query = (
+            return (
                 Q(title__icontains=q) |
                 Q(content__icontains=q) |
                 Q(tags__icontains=q)
             )
         else:
-            query = Q()
-
-        return query
+            return Q()
 
     def search(self, q, filters):
         return self.published().filter(filters).filter(
@@ -206,14 +204,13 @@ class CommentManager(models.Manager):
 
     def search_query(self, q):
         if q:
-            query = (
+            return (
                 Q(content__icontains=q) |
                 (Q(user__isnull=True) & Q(name__icontains=q)) |
                 Q(user__call_name__icontains=q)
             )
         else:
-            query = Q()
-        return query
+            return Q()
 
     def admin_search(self, q, filters):
         return self.filter(filters).filter(self.search_query(q)).distinct()
