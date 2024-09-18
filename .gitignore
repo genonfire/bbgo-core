@@ -11,3 +11,4 @@ pyrightconfig.json
 /frontend/upload/
 /.tox/
 /*.egg-info/
+/typings/

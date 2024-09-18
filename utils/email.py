@@ -17,7 +17,7 @@ from utils.debug import Debug
 class _EmailHelper(object):
     def _recipient_list(self, recipients):
         if not recipients:
-            return None
+            return []
 
         if isinstance(recipients, list):
             return recipients

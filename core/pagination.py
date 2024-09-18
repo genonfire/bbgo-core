@@ -25,7 +25,7 @@ class PrevNextPagination(_BasePagination):
     page_size_query_param = 'page_size'
     page_size_query_param_all = 'all'
 
-    def get_page_size(self, request, queryset):
+    def get_page_size_with_queryset(self, request, queryset):
         if self.page_size_query_param:
             try:
                 page_size = request.query_params[self.page_size_query_param]
@@ -50,7 +50,7 @@ class PrevNextPagination(_BasePagination):
         return remove_query_param(url, self.page_query_param)
 
     def paginate_queryset(self, queryset, request, view=None):
-        page_size = self.get_page_size(request, queryset)
+        page_size = self.get_page_size_with_queryset(request, queryset)
         if not page_size:
             return None
 

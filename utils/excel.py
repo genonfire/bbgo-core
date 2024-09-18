@@ -63,7 +63,7 @@ class ExcelViewSet(ReadOnlyModelViewSet):
         else:
             return ''
 
-    def make_data(self, instance=None):
+    def make_data(self, key=None, index=0):
         data = [
             self.title
         ]

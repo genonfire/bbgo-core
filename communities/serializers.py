@@ -345,7 +345,7 @@ class ThreadFileSerializer(ThreadSerializer):
 
         return attrs
 
-    def save(self):
+    def save(self, **kwargs):
         if not self.instance.files:
             self.instance.files.set('')
 

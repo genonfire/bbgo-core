@@ -98,7 +98,7 @@ class LoginDeviceSerializer(ModelSerializer):
 
 
 class _PasswordChangeSerializer(Serializer):
-    def save(self):
+    def save(self, **kwargs):
         self.user.set_password(self.validated_data.get('new_password'))
         self.user.save(update_fields=['password'])
         self.user.token().delete()
@@ -162,7 +162,7 @@ class PasswordResetSerializer(Serializer):
         return attrs
 
     @async_func
-    def save(self):
+    def save(self, **kwargs):
         if settings.DO_NOT_SEND_EMAIL:
             return
 

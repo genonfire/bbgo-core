@@ -92,28 +92,28 @@ class TestCase(APITestCase):
             self.loooog(kwargs.get('tag', ''), args[0], args[2])
         assert args[0] >= args[1] and args[0] <= args[2]
 
-    def get(self, path, data=None, format='json', auth=False, **extra):
+    def get(self, path, data={}, format='json', auth=False, **extra):
         if auth:
             response = self.client.get(
-                path, data, format,
+                path, data, format=format,
                 HTTP_AUTHORIZATION=self.auth_header, **extra
             )
         else:
-            response = self.client.get(path, data, format, **extra)
+            response = self.client.get(path, data, format=format, **extra)
 
         self.response = response
         if hasattr(response, 'data'):
             self.data = response.data.get('data')
         return response
 
-    def post(self, path, data=None, format='json', auth=False, **extra):
+    def post(self, path, data={}, format='json', auth=False, **extra):
         if auth:
             response = self.client.post(
-                path, data, format,
+                path, data, format=format,
                 HTTP_AUTHORIZATION=self.auth_header, **extra
             )
         else:
-            response = self.client.post(path, data, format, **extra)
+            response = self.client.post(path, data, format=format, **extra)
 
         self.response = response
 
@@ -123,38 +123,38 @@ class TestCase(APITestCase):
             self.data = response.data.get('data')
         return response
 
-    def put(self, path, data=None, format='json', auth=False, **extra):
+    def put(self, path, data={}, format='json', auth=False, **extra):
         if auth:
             response = self.client.put(
-                path, data, format,
+                path, data, format=format,
                 HTTP_AUTHORIZATION=self.auth_header, **extra
             )
         else:
-            response = self.client.put(path, data, format, **extra)
+            response = self.client.put(path, data, format=format, **extra)
 
         self.response = response
         if hasattr(response, 'data'):
             self.data = response.data.get('data')
         return response
 
-    def patch(self, path, data=None, format='json', auth=False, **extra):
+    def patch(self, path, data={}, format='json', auth=False, **extra):
         if auth:
             response = self.client.patch(
-                path, data, format,
+                path, data, format=format,
                 HTTP_AUTHORIZATION=self.auth_header, **extra
             )
         else:
-            response = self.client.patch(path, data, format, **extra)
+            response = self.client.patch(path, data, format=format, **extra)
 
         self.response = response
         if hasattr(response, 'data'):
             self.data = response.data.get('data')
         return response
 
-    def delete(self, path, data=None, format='json', auth=False, **extra):
+    def delete(self, path, data={}, format='json', auth=False, **extra):
         if auth:
             response = self.client.delete(
-                path, data, format,
+                path, data, format=format,
                 HTTP_AUTHORIZATION=self.auth_header, **extra
             )
         else:
@@ -165,10 +165,10 @@ class TestCase(APITestCase):
             self.data = response.data.get('data')
         return response
 
-    def options(self, path, data=None, format='json', auth=False, **extra):
+    def options(self, path, data={}, format='json', auth=False, **extra):
         if auth:
             response = self.client.options(
-                path, data, format,
+                path, data, format=format,
                 HTTP_AUTHORIZATION=self.auth_header, **extra
             )
         else:
