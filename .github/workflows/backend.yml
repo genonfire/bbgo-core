@@ -73,5 +73,7 @@ jobs:
         tox
 
     - name: Upload coverage
-      if: success() && github.ref == 'refs/heads/master'
-      run: codecov
+      if: success()
+      uses: codecov/codecov-action@v4
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
